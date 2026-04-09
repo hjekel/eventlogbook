@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>ITAD Nice '26 · Joep</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --r:13px;--rs:8px;--hh:54px;
+  --safe-b:env(safe-area-inset-bottom,16px);
+  --acc:#e05c25;--acc-d:#3a1b10;
+  --blue:#3a9ae0;--blue-d:#0c2640;
+  --grn:#3dab72;--grn-d:#0c2818;
+  --gold:#c9a01a;--gold-d:#281e06;
+  --purp:#8b72e8;--purp-d:#1a1442;
+  --teal:#2ab5a5;--teal-d:#082820;
+  --trs:background .22s,color .22s,border-color .22s;
+}
+[data-theme="dark"]{--bg:#090807;--sf:#121009;--sf2:#1a1814;--sf3:#222018;--bd:#2b2820;--tx:#f0ebe2;--mu:#74706a;--done-bg:#131210;--done-tx:#3e3b37;--sh:rgba(0,0,0,.55)}
+[data-theme="light"]{--bg:#f3f0ea;--sf:#ffffff;--sf2:#ede9e0;--sf3:#e4e0d6;--bd:#cdc8bc;--tx:#18140e;--mu:#847e76;--done-bg:#f8f6f2;--done-tx:#aea89e;--sh:rgba(0,0,0,.08);--acc-d:#fde4d8;--blue-d:#d8ecf8;--grn-d:#d8f0e4;--gold-d:#fdf4d0;--purp-d:#ece8fc;--teal-d:#d4f4f0}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Instrument Sans',sans-serif;font-size:14px;background:var(--bg);color:var(--tx);display:flex;flex-direction:column;height:100dvh;transition:var(--trs)}
+
+/* HEADER */
+.hdr{height:var(--hh);padding:0 10px 0 14px;display:flex;align-items:center;gap:8px;background:var(--sf);border-bottom:1px solid var(--bd);flex-shrink:0;transition:var(--trs)}
+.htitle{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;letter-spacing:-.02em;flex-shrink:0}
+.htitle span{color:var(--acc)}
+.hsp{flex:1}
+.flags{display:flex;gap:2px;background:var(--sf2);border:1px solid var(--bd);border-radius:22px;padding:3px}
+.flag-btn{width:26px;height:20px;border:none;border-radius:13px;background:transparent;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:background .15s;line-height:1}
+.flag-btn.on{background:var(--sf);box-shadow:0 1px 4px var(--sh)}
+.flag-btn:active{transform:scale(.88)}
+.thm-btn{width:32px;height:32px;border:1px solid var(--bd);border-radius:50%;background:var(--sf2);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:var(--trs)}
+.thm-btn:active{transform:scale(.88)}
+[data-theme="light"] .i-moon{display:none}
+[data-theme="dark"]  .i-sun{display:none}
+
+/* PROGRESS */
+.prog-wrap{height:3px;background:var(--sf3);flex-shrink:0}
+.prog-bar{height:100%;background:linear-gradient(90deg,var(--acc),var(--gold));transition:width .4s}
+
+/* LENS BAR */
+.lens-bar{display:flex;gap:6px;padding:8px 14px 6px;background:var(--sf);border-bottom:1px solid var(--bd);flex-shrink:0;overflow-x:auto;scrollbar-width:none}
+.lens-bar::-webkit-scrollbar{display:none}
+.lens-pill{padding:5px 12px;border-radius:20px;border:1px solid var(--bd);background:transparent;font-family:'Instrument Sans',sans-serif;font-size:10.5px;font-weight:600;color:var(--mu);cursor:pointer;white-space:nowrap;transition:all .18s;flex-shrink:0}
+.lens-pill.on-all{background:var(--sf2);color:var(--tx);border-color:var(--bd)}
+.lens-pill.on-planbit{background:var(--blue-d);color:var(--blue);border-color:transparent}
+.lens-pill.on-erpie{background:var(--acc-d);color:var(--acc);border-color:transparent}
+.lens-pill.on-ai{background:var(--purp-d);color:var(--purp);border-color:transparent}
+
+/* TABS */
+.tabs{display:flex;background:var(--sf);border-bottom:1px solid var(--bd);flex-shrink:0;transition:var(--trs)}
+.tb{flex:1;min-width:58px;padding:8px 2px 6px;border:none;background:transparent;color:var(--mu);font-family:'Instrument Sans',sans-serif;font-size:10px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;border-bottom:2px solid transparent;transition:color .18s,border-color .18s}
+.tb.on{color:var(--tx);border-bottom-color:var(--acc)}
+.tb .ico{font-size:14px}
+.bdg{background:var(--acc);color:#fff;font-size:9px;font-weight:700;min-width:15px;height:15px;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0 3px}
+.bdg.bb{background:var(--blue)}.bdg.bg{background:var(--grn)}
+
+/* PANES */
+.pane{display:none;flex:1;overflow-y:auto;padding-bottom:calc(16px + var(--safe-b))}
+.pane.on{display:block}
+
+/* ── AGENDA ── */
+.daysec{padding:14px 14px 0}
+.dhrow{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.dn{font-family:'Syne',sans-serif;font-size:17px;font-weight:800}
+.ddl{font-size:10px;color:var(--mu);background:var(--sf2);padding:3px 9px;border-radius:20px}
+.sitem{display:flex;gap:10px;margin-bottom:9px;background:var(--sf2);border:1px solid var(--bd);border-radius:var(--r);padding:11px 13px;cursor:pointer;transition:border-color .18s,var(--trs);position:relative}
+.sitem.flag{border-left:3px solid var(--acc)}
+.sitem.ai-s{border-left:3px solid var(--purp)}
+.sitem.pb-s{border-left:3px solid var(--blue)}
+.sitem.multi-s{border-left:3px solid var(--teal)}
+.sitem.chk-s{opacity:.4;background:var(--done-bg)}
+.sitem.chk-s .sti{text-decoration:line-through;color:var(--mu)}
+/* lens filter on agenda */
+.pane[data-lens="planbit"] .sitem:not([data-lens~="planbit"]){display:none}
+.pane[data-lens="erpie"]   .sitem:not([data-lens~="erpie"]){display:none}
+.pane[data-lens="ai"]      .sitem:not([data-lens~="ai"]){display:none}
+.stm{font-family:'Syne',sans-serif;font-size:10.5px;font-weight:700;color:var(--mu);min-width:50px;padding-top:1px;line-height:1.3;flex-shrink:0}
+.sbod{flex:1}
+.sti{font-size:12.5px;font-weight:600;color:var(--tx);line-height:1.4;margin-bottom:2px}
+.swho{font-size:10.5px;color:var(--mu);line-height:1.4;margin-bottom:5px}
+.sflags{display:flex;gap:3px;flex-wrap:wrap}
+.sf{font-size:9px;font-weight:700;padding:2px 6px;border-radius:20px;letter-spacing:.03em}
+.sf.must{background:var(--acc-d);color:var(--acc)}
+.sf.aif{background:var(--purp-d);color:var(--purp)}
+.sf.pbf{background:var(--blue-d);color:var(--blue)}
+.sf.net{background:var(--gold-d);color:var(--gold)}
+.sf.int{background:var(--sf3);color:var(--mu)}
+.sf.erf{background:var(--acc-d);color:var(--acc)}
+.sf.both{background:var(--teal-d);color:var(--teal)}
+[data-theme="light"] .sf.aif{background:#ede8fc;color:#5a3cc4}
+.sch{font-size:16px;flex-shrink:0;padding-top:1px}
+.dd{height:1px;background:var(--bd);margin:18px 14px 14px}
+
+/* ── CONTACTS ── */
+.lsec{padding:14px}
+.lsec+.lsec{padding-top:0}
+/* lens filter on contacts */
+.pane[data-lens="planbit"] .crow:not([data-lens~="planbit"]){display:none}
+.pane[data-lens="erpie"]   .crow:not([data-lens~="erpie"]){display:none}
+.pane[data-lens="ai"]      .crow:not([data-lens~="ai"]){display:none}
+/* hide empty section labels */
+.pane[data-lens="planbit"] .lsec:not(:has(.crow[data-lens~="planbit"])){display:none}
+.pane[data-lens="erpie"]   .lsec:not(:has(.crow[data-lens~="erpie"])){display:none}
+.pane[data-lens="ai"]      .lsec:not(:has(.crow[data-lens~="ai"])){display:none}
+.slbl{font-family:'Syne',sans-serif;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mu);margin-bottom:9px;padding:0 2px}
+.crow{background:var(--sf2);border:1px solid var(--bd);border-radius:var(--r);padding:14px;margin-bottom:10px;transition:var(--trs)}
+.cname{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--tx);margin-bottom:2px}
+.cco{font-size:12px;color:var(--mu);margin-bottom:10px}
+/* session block - larger */
+.csess{background:var(--sf3);border-radius:var(--rs);padding:10px 12px;margin-bottom:10px;border-left:3px solid var(--acc)}
+.csess-day{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--acc);margin-bottom:1px}
+.csess-name{font-size:12.5px;font-weight:600;color:var(--tx);margin-bottom:4px;line-height:1.4}
+.csess-quote{font-size:11.5px;color:var(--mu);font-style:italic;line-height:1.5;border-top:1px solid var(--bd);padding-top:6px;margin-top:4px}
+.clenses{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px}
+.lt{font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;display:inline-flex;align-items:center;gap:3px}
+.lt.pb{background:var(--blue-d);color:var(--blue)}
+.lt.er{background:var(--acc-d);color:var(--acc)}
+.lt.ai{background:var(--purp-d);color:var(--purp)}
+.lt.nl{background:var(--teal-d);color:var(--teal)}
+.lt.d1{background:var(--acc-d);color:var(--acc)}
+.lt.d2{background:var(--blue-d);color:var(--blue)}
+.lt.d0{background:var(--gold-d);color:var(--gold)}
+[data-theme="light"] .lt.ai{background:#ede8fc;color:#5a3cc4}
+.why-tabs{display:flex;gap:4px;margin-bottom:8px}
+.why-tb{flex:1;padding:5px 4px;border-radius:var(--rs);border:1px solid var(--bd);background:transparent;font-family:'Instrument Sans',sans-serif;font-size:10px;font-weight:600;color:var(--mu);cursor:pointer;text-align:center;transition:all .15s}
+.why-tb.on-pb{background:var(--blue-d);color:var(--blue);border-color:transparent}
+.why-tb.on-er{background:var(--acc-d);color:var(--acc);border-color:transparent}
+.why-tb.on-ai{background:var(--purp-d);color:var(--purp);border-color:transparent}
+.why-body{font-size:11.5px;color:var(--mu);line-height:1.55;background:var(--sf3);border-radius:var(--rs);padding:9px 11px;min-height:44px}
+.why-body strong{color:var(--tx)}
+.cacts{display:flex;gap:6px;margin-top:10px}
+.abt{flex:1;padding:7px 3px;border-radius:var(--rs);border:1px solid var(--bd);background:var(--sf3);color:var(--mu);font-size:10.5px;font-weight:600;font-family:'Instrument Sans',sans-serif;text-align:center;text-decoration:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:3px;transition:all .15s}
+.abt.li{background:var(--blue-d);color:var(--blue);border-color:transparent}
+.abt.done-btn{background:var(--grn-d);color:var(--grn);border-color:transparent}
+.abt.done-btn.chk{background:var(--grn);color:#fff}
+.abt:active{opacity:.7;transform:scale(.97)}
+
+/* ── KANBAN — horizontal scroll, cards in single column per state ── */
+.kb-stats{display:flex;background:var(--sf2);border:1px solid var(--bd);border-radius:var(--r);margin:12px 14px 0;overflow:hidden;transition:var(--trs)}
+.kb-st{flex:1;padding:10px 6px;text-align:center;border-right:1px solid var(--bd)}
+.kb-st:last-child{border-right:none}
+.kb-sn{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;line-height:1}
+.kb-sl{font-size:10px;color:var(--mu);margin-top:2px}
+/* horizontal track */
+.kb-track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:0;padding:12px 0 12px;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.kb-track::-webkit-scrollbar{display:none}
+.kb-col{min-width:100%;width:100%;scroll-snap-align:start;padding:0 14px;flex-shrink:0}
+/* column header */
+.kb-ch{display:flex;align-items:center;gap:7px;margin-bottom:10px;padding:7px 12px;border-radius:var(--rs)}
+.kb-ch.todo{background:var(--acc-d)} .kb-ch.doing{background:var(--blue-d)} .kb-ch.done{background:var(--sf2)}
+.kb-cl{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+.kb-ch.todo .kb-cl{color:var(--acc)} .kb-ch.doing .kb-cl{color:var(--blue)} .kb-ch.done .kb-cl{color:var(--mu)}
+.kb-cn{margin-left:auto;font-size:10px;font-weight:700;background:var(--sf3);border-radius:20px;padding:2px 7px;color:var(--mu)}
+/* nav arrows */
+.kb-nav{display:flex;justify-content:center;gap:10px;padding:4px 14px 0;align-items:center}
+.kb-arrow{width:36px;height:36px;border-radius:50%;border:1px solid var(--bd);background:var(--sf2);color:var(--tx);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s;flex-shrink:0}
+.kb-arrow:active{background:var(--sf3)}
+.kb-dots{display:flex;gap:6px;align-items:center}
+.kb-dot{width:7px;height:7px;border-radius:50%;background:var(--bd);transition:background .2s,width .2s}
+.kb-dot.on{background:var(--acc);width:18px;border-radius:4px}
+/* kanban card */
+.kcard{background:var(--sf2);border:1px solid var(--bd);border-radius:var(--r);padding:13px;margin-bottom:9px;border-top:2px solid transparent;transition:border-color .18s,var(--trs)}
+.kcard.lens-planbit{border-top-color:var(--blue)}
+.kcard.lens-erpie{border-top-color:var(--acc)}
+.kcard.lens-ai{border-top-color:var(--purp)}
+.kcard.lens-both{border-top:2px solid var(--teal)}
+.kcard.done-c{background:var(--done-bg);border-color:var(--sf3);opacity:.55}
+.kcard.done-c .kct{color:var(--done-tx);text-decoration:line-through}
+/* lens filter on kanban cards */
+.kb-col[data-lens="planbit"] .kcard:not(.lens-planbit):not(.lens-both){opacity:.2;pointer-events:none}
+.kb-col[data-lens="erpie"]   .kcard:not(.lens-erpie):not(.lens-both){opacity:.2;pointer-events:none}
+.kb-col[data-lens="ai"]      .kcard:not(.lens-ai){opacity:.2;pointer-events:none}
+.ctp{font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px}
+.ctp.p{color:var(--acc)}.ctp.s{color:var(--blue)}.ctp.r{color:var(--gold)}.ctp.ai{color:var(--purp)}
+.kct{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;line-height:1.25;color:var(--tx);margin-bottom:3px}
+.kcs{font-size:11px;color:var(--mu);line-height:1.4;margin-bottom:7px}
+.ltags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:7px}
+.mbtn{margin-top:9px;width:100%;padding:8px;border:1px solid var(--bd);border-radius:var(--rs);background:transparent;color:var(--mu);font-family:'Instrument Sans',sans-serif;font-size:11px;font-weight:600;cursor:pointer;transition:background .15s,color .15s}
+.mbtn:active{background:var(--sf3);color:var(--tx)}
+
+/* ── TIPS ── */
+.tips{padding:14px;display:flex;flex-direction:column;gap:9px}
+.tcard{background:var(--sf2);border:1px solid var(--bd);border-radius:var(--r);padding:13px;display:flex;gap:11px;align-items:flex-start;transition:var(--trs)}
+.tcard.tp{border-left:3px solid var(--blue)}
+.tcard.te{border-left:3px solid var(--acc)}
+.tcard.ta{border-left:3px solid var(--purp)}
+.tcard.tm{border-left:3px solid var(--teal)}
+/* lens filter on tips */
+.pane[data-lens="planbit"] .tcard:not([data-lens~="planbit"]){display:none}
+.pane[data-lens="erpie"]   .tcard:not([data-lens~="erpie"]){display:none}
+.pane[data-lens="ai"]      .tcard:not([data-lens~="ai"]){display:none}
+.tico{font-size:19px;flex-shrink:0;padding-top:1px}
+.ttl{font-family:'Syne',sans-serif;font-size:12.5px;font-weight:700;color:var(--tx);margin-bottom:3px}
+.tbd{font-size:11.5px;color:var(--mu);line-height:1.6}
+.tbd strong{color:var(--tx)}
+.tbd em{font-style:italic}
+
+/* ── NICE TAB ── */
+.nice-hero{background:linear-gradient(160deg,#1a3a5c,#0a1e32);padding:20px 16px 16px;border-bottom:1px solid var(--bd)}
+.nice-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#e8d5a0;margin-bottom:4px}
+.nice-sub{font-size:12px;color:#8ab0cc;line-height:1.5}
+[data-theme="light"] .nice-hero{background:linear-gradient(160deg,#daeaf8,#c0d8ee)}
+[data-theme="light"] .nice-title{color:#1a3a5c}
+[data-theme="light"] .nice-sub{color:#3a6a8c}
+.nice-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px}
+.nice-card{background:var(--sf2);border:1px solid var(--bd);border-radius:var(--r);padding:13px;transition:var(--trs)}
+.nice-card.full{grid-column:1/-1}
+.nice-ico{font-size:20px;margin-bottom:6px}
+.nice-ctitle{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--tx);margin-bottom:5px}
+.nice-cbody{font-size:11.5px;color:var(--mu);line-height:1.6}
+.nice-cbody strong{color:var(--tx)}
+.nice-list{list-style:none;padding:0;margin:0}
+.nice-list li{font-size:11.5px;color:var(--mu);line-height:1.6;padding:2px 0;border-bottom:1px solid var(--bd)}
+.nice-list li:last-child{border-bottom:none}
+.nice-list li span{color:var(--tx);font-weight:600}
+.nice-fact{background:var(--sf3);border-radius:var(--rs);padding:8px 10px;margin-top:6px;font-size:11px;color:var(--mu);font-style:italic;line-height:1.5}
+
+::-webkit-scrollbar{width:3px;height:3px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--bd);border-radius:10px}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="htitle">ITAD <span>Nice</span> '26</div>
+  <div class="hsp"></div>
+  <div class="flags">
+    <button class="flag-btn" id="fl-nl" onclick="setLang('nl')" title="Nederlands">🇳🇱</button>
+    <button class="flag-btn on" id="fl-en" onclick="setLang('en')" title="English">🇬🇧</button>
+    <button class="flag-btn" id="fl-fr" onclick="setLang('fr')" title="Français">🇫🇷</button>
+  </div>
+  <button class="thm-btn" onclick="toggleTheme()"><span class="i-moon">🌙</span><span class="i-sun">☀️</span></button>
+</div>
+<div class="prog-wrap"><div class="prog-bar" id="prog" style="width:0%"></div></div>
+
+<div class="lens-bar">
+  <button class="lens-pill on-all" id="l-all"     onclick="setLens('all')"     data-i="lens_all">🔍 All</button>
+  <button class="lens-pill"        id="l-planbit" onclick="setLens('planbit')" data-i="lens_pb">🏭 PlanBit</button>
+  <button class="lens-pill"        id="l-erpie"   onclick="setLens('erpie')"   data-i="lens_er">⭐ ERPIE</button>
+  <button class="lens-pill"        id="l-ai"      onclick="setLens('ai')"      data-i="lens_ai">🤖 AI/Tech</button>
+</div>
+
+<div class="tabs">
+  <button class="tb on" onclick="sw('agenda')">
+    <span class="ico">📅</span><span data-i="t_ag">Agenda</span>
+    <span class="bdg bb" id="b-ag">12</span>
+  </button>
+  <button class="tb" onclick="sw('contacts')">
+    <span class="ico">🤝</span><span data-i="t_ppl">People</span>
+    <span class="bdg" id="b-ppl">8</span>
+  </button>
+  <button class="tb" onclick="sw('kanban')">
+    <span class="ico">📋</span><span data-i="t_kb">Kanban</span>
+    <span class="bdg" id="b-todo">11</span>
+  </button>
+  <button class="tb" onclick="sw('tips')">
+    <span class="ico">💡</span><span data-i="t_tips">Tips</span>
+  </button>
+  <button class="tb" onclick="sw('nice')">
+    <span class="ico">🌊</span><span data-i="t_nice">Nice</span>
+  </button>
+</div>
+
+<!-- ══════ PANE 1: AGENDA ══════ -->
+<div class="pane on" id="pane-agenda">
+
+  <div class="daysec">
+    <div class="dhrow"><div class="dn" style="color:var(--gold)" data-i="dn0">Day 0</div><div class="ddl">Monday 14 April</div></div>
+    <div class="sitem ai-s" data-lens="ai erpie" onclick="chkS(this)">
+      <div class="stm">13:00<br>–16:00</div>
+      <div class="sbod">
+        <div class="sti" data-i="s_mc">⚡ AI Masterclass: Intelligent ITAD → AI-Driven Value Engines</div>
+        <div class="swho">Rich Bulger · Peter Evans PhD · Victoria D'Arcy</div>
+        <div class="sflags"><span class="sf must" data-i="sf_must">MUST ATTEND</span><span class="sf aif">AI + ITAD</span><span class="sf erf">⭐ ERPIE context</span></div>
+      </div><div class="sch">☐</div>
+    </div>
+    <div class="sitem" data-lens="planbit" onclick="chkS(this)">
+      <div class="stm">13:00<br>–16:00</div>
+      <div class="sbod">
+        <div class="sti" data-i="s_ws">Workshop: ITAD → Full Circular Lifecycle Org</div>
+        <div class="swho">Jimmy Rodriguez (Ivy Technology) · Josh Beasley (Early Upgrade) · Tim Suhling (Circular Integrity) · Faye Thomas (Vyta)</div>
+        <div class="sflags"><span class="sf pbf">🏭 Lifecycle intel</span></div>
+      </div><div class="sch">☐</div>
+    </div>
+  </div>
+  <div class="dd"></div>
+
+  <div class="daysec">
+    <div class="dhrow"><div class="dn" style="color:var(--acc)" data-i="dn1">Day 1</div><div class="ddl">Wednesday 15 April</div></div>
+    <div class="sitem" data-lens="planbit erpie ai" onclick="chkS(this)">
+      <div class="stm">09:00<br>–10:00</div>
+      <div class="sbod">
+        <div class="sti" data-i="s_kn1">Joint Keynote: Global Lifecycle Revolution 2030</div>
+        <div class="swho">Tsuyoshi Shimizu (We Sell Cellular) · Darrell Fleming-Kendall (GIA) · Fredrik Forslund (Blancco) · Jennifer Foxworthy (HP Renew) · John Shegerian (ERI)</div>
+        <div class="sflags"><span class="sf int">INTEL</span></div>
+      </div><div class="sch">☐</div>
+    </div>
+    <div class="sitem flag" data-lens="ai erpie planbit" onclick="chkS(this)">
+      <div class="stm">10:15<br>–11:00</div>
+      <div class="sbod">
+        <div class="sti" data-i="s_3">🔴 ITAD 3.0: AI, Capital &amp; Carbon</div>
+        <div class="swho">Todd Zegers (CXtec CEO) · Jules Wurlod (Houlihan Lokey M&amp;A Dir.) · Sebastian Foot (Bloom ESG CEO) · Ali Musleem (TDW VP)</div>
+        <div class="sflags"><span class="sf must">TODD ZEGERS</span><span class="sf aif">AI + ITAD</span><span class="sf erf">⭐ context</span></div>
+      </div><div class="sch">☐</div>
+    </div>
+    <div class="sitem pb-s" data-lens="planbit erpie" onclick="chkS(this)">
+      <div class="stm">11:15<br>–12:00</div>
+      <div class="sbod">
+        <div class="sti" data-i="s_ent">🔵 Enterprise ITAD at Global Scale</div>
+        <div class="swho">Eric Ingebretsen (SK tes CCO) · Ben László (Kuusakoski, Head ITAD) · Kevin Dillon (ERI CMO) · Rich Bulger (Going Circular)</div>
+        <div class="sflags"><span class="sf pbf">🏭 Subcontract intel</span><span class="sf erf">⭐ context</span></div>
+      </div><div class="sch">☐</div>
+    </div>
+    <div class="sitem" data-lens="planbit" onclick="chkS(this)">
+      <div class="stm">13:00<br>–13:45</div>
+      <div class="sbod">
+        <div class="sti" data-i="s_era">Next-Gen Data Erasure &amp; Chain of Custody</div>
+        <div class="swho">Yves Gheeraert (Blancco Sr. Dir.) · Tim Suhling (Circular Integrity CEO) · Lionel Uzzan (Le GSM CEO) · Sunil Chandna (BitRaser Pres.)</div>
+        <div class="sflags"><span class="sf int">INTEL</span></div>
+      </div><div class="sch">☐</div>
+    </div>
+    <div class="sitem pb-s" data-lens="planbit" onclick="chkS(this)">
+      <div class="stm">14:00<br>–14:45</div>
+      <div class="sbod">
+        <div class="sti" data-i="s_hw">Enterprise Hardware Lifecycle: OEM to End-of-Life</div>
+        <div class="swho">Derek Kelly (Iron Mountain EMEA Sr. Dir.) · Teofilo Del Toro (Full Circle CEO LatAm) · Ashley Foreman (Dynamic Lifecycle EVP Sales) · Jordan Leventis (Renew IT)</div>
+        <div class="sflags"><span class="sf pbf">🏭 Remarketing flows</span></div>
+      </div><div class="sch">☐</div>
+    </div>
+    <div class="sitem flag" data-lens="planbit erpie" onclick="chkS(this)">
+      <div class="stm">16:00<br>–16:45</div>
+      <div class="sbod">
+        <div class="sti" data-i="s_cv">🔴 Unlocking Circular Value in Asset Lifecycle</div>
+        <div class="swho">Carmen Ene (BNP Paribas 3 Step IT CEO) · Shahriyar Rahmati (Reconext CEO) · Peter Evans PhD (All Things Circular) · Victoria D'Arcy</div>
+        <div class="sflags"><span class="sf must">CARMEN ENE</span><span class="sf pbf">🏭 Lease returns</span><span class="sf erf">⭐ context</span></div>
+      </div><div class="sch">☐</div>
+    </div>
+    <div class="sitem" data-lens="planbit erpie ai" onclick="chkS(this)">
+      <div class="stm">19:00<br>–22:00</div>
+      <div class="sbod">
+        <div class="sti" data-i="s_rt">🍾 Opening Night Rooftop Reception</div>
+        <div class="swho" data-i="s_rt_sub">Best networking of the event — arrive early!</div>
+        <div class="sflags"><span class="sf net" data-i="sf_net">NETWORKING</span></div>
+      </div><div class="sch">☐</div>
+    </div>
+  </div>
+  <div class="dd"></div>
+
+  <div class="daysec">
+    <div class="dhrow"><div class="dn" style="color:var(--blue)" data-i="dn2">Day 2</div><div class="ddl">Thursday 16 April</div></div>
+    <div class="sitem" data-lens="planbit ai" onclick="chkS(this)">
+      <div class="stm">09:00<br>–10:00</div>
+      <div class="sbod">
+        <div class="sti" data-i="s_lnv">Joint Keynote: Lenovo — Sustainability Solutions</div>
+        <div class="swho">Stefan Larsen (Lenovo Global Head Environmental) · Cassie Gruber (Circular Bound CEO)</div>
+        <div class="sflags"><span class="sf int">INTEL</span></div>
+      </div><div class="sch">☐</div>
+    </div>
+    <div class="sitem ai-s" data-lens="ai erpie" onclick="chkS(this)">
+      <div class="stm">10:15<br>–11:00</div>
+      <div class="sbod">
+        <div class="sti" data-i="s_cm">🤖 Critical Materials &amp; ITAD Intelligence</div>
+        <div class="swho">Karl Meir (Cyclic Materials BD Dir.) · Mike DiPetrillo (Layer IQ CEO) · Andrew Kroeger (CypherBlk Co-founder) · Victoria D'Arcy</div>
+        <div class="sflags"><span class="sf aif">AI PLAYERS</span><span class="sf erf">⭐ intel</span></div>
+      </div><div class="sch">☐</div>
+    </div>
+    <div class="sitem multi-s" data-lens="planbit erpie" onclick="chkS(this)">
+      <div class="stm">11:15<br>–12:00</div>
+      <div class="sbod">
+        <div class="sti" data-i="s_ch">🔴 Channel Mastery: Marketplaces in Modern ITAD</div>
+        <div class="swho">Kevin Corrigan (CXtec CSO) · David Manning (Iron Mountain Remarketing Dir.) · Daniel Krüger (eBay Germany Sr. Mgr) · Antoine Barbry (Back Market EU Sales Dir.)</div>
+        <div class="sflags"><span class="sf must">KEVIN + ANTOINE</span><span class="sf pbf">🏭 Buyer channels</span><span class="sf erf">⭐ context</span></div>
+      </div><div class="sch">☐</div>
+    </div>
+    <div class="sitem" data-lens="planbit" onclick="chkS(this)">
+      <div class="stm">13:00<br>–13:45</div>
+      <div class="sbod">
+        <div class="sti" data-i="s_pol">Global Policy: WEEE, Batteries &amp; Circular Mandates</div>
+        <div class="swho">Helmut Minor (envenance Pres.) · Csaba Kallai (CHG-MERIDIAN Head Production) · Oli Mason (KOCycle MD)</div>
+        <div class="sflags"><span class="sf pbf">🏭 CHG-MERIDIAN</span><span class="sf int">Compliance</span></div>
+      </div><div class="sch">☐</div>
+    </div>
+    <div class="sitem pb-s" data-lens="planbit" onclick="chkS(this)">
+      <div class="stm">14:00<br>–14:45</div>
+      <div class="sbod">
+        <div class="sti" data-i="s_pn">Building a Reliable International Partner Network</div>
+        <div class="swho">Nic Norris (ReCircle Tech CEO) · Ethan Lancaster (Renew IT COO) · C. Brooks Hoffman (Alchemy ITAD Dir.) · Craig Campion (Stone)</div>
+        <div class="sflags"><span class="sf pbf">🏭 Partner network</span></div>
+      </div><div class="sch">☐</div>
+    </div>
+    <div class="sitem flag" data-lens="planbit" onclick="chkS(this)">
+      <div class="stm">15:00<br>–15:45</div>
+      <div class="sbod">
+        <div class="sti" data-i="s_wm">🔴 Empowered Women — Careers in Ever-Changing Tech</div>
+        <div class="swho">Ann Morris (3 Step IT Service Delivery Dir.) · Amanda Harris (Centerprise Dir.) · Theresa von Alten (Recyclotronix Head BD) · Kimberly Labanauskas (Sims Global BD Mgr)</div>
+        <div class="sflags"><span class="sf must">KIMBERLY SLS</span><span class="sf pbf">🏭 NL partnership</span></div>
+      </div><div class="sch">☐</div>
+    </div>
+    <div class="sitem" data-lens="planbit ai" onclick="chkS(this)">
+      <div class="stm">16:00<br>–16:45</div>
+      <div class="sbod">
+        <div class="sti" data-i="s_esg">ITAD + ESG: The Next Billion-Dollar Opportunity</div>
+        <div class="swho">Cassie Gruber (Circular Bound CEO) · Laurent Landie (Asia Data Destruction CEO) · Casey Dingfelder (Dynamic Lifecycle VP)</div>
+        <div class="sflags"><span class="sf int">TRENDS</span></div>
+      </div><div class="sch">☐</div>
+    </div>
+    <div class="sitem" data-lens="planbit erpie ai" onclick="chkS(this)">
+      <div class="stm">19:00<br>–22:00</div>
+      <div class="sbod">
+        <div class="sti" data-i="s_on">🥂 ITAD on the Town — Old Nice</div>
+        <div class="swho">Chez Simon + Perlone</div>
+        <div class="sflags"><span class="sf net" data-i="sf_net">NETWORKING</span></div>
+      </div><div class="sch">☐</div>
+    </div>
+  </div>
+  <div style="height:14px"></div>
+</div>
+
+<!-- ══════ PANE 2: CONTACTS ══════ -->
+<div class="pane" id="pane-contacts">
+  <div class="lsec">
+    <div class="slbl" data-i="pr_hi">🔴 Top Priority</div>
+
+    <div class="crow" data-lens="planbit erpie">
+      <div class="cname">Todd Zegers</div>
+      <div class="cco">CEO · CXtec (Syracuse, NY)</div>
+      <div class="csess">
+        <div class="csess-day">Day 1 · Wed 15 Apr · 10:15–11:00</div>
+        <div class="csess-name" data-i="c_todd_sess">ITAD 3.0: AI, Capital &amp; Carbon</div>
+        <div class="csess-quote" data-i="c_todd_quote">"The opportunity to grow and work with more partners to optimise their IT hardware management in a sustainable and cost-effective manner is limitless."</div>
+      </div>
+      <div class="clenses"><span class="lt pb">🏭 PlanBit</span><span class="lt er">⭐ ERPIE</span></div>
+      <div class="why-tabs">
+        <button class="why-tb on-pb" onclick="whyTab(this,'todd','pb')" data-i="wb_pb">🏭 PlanBit</button>
+        <button class="why-tb" onclick="whyTab(this,'todd','er')" data-i="wb_er">⭐ ERPIE</button>
+      </div>
+      <div class="why-body" id="why-todd" data-i="why_todd_pb">Ex-Ingram Micro VP ITAD with a deep European network. <strong>CXtec processes high-value data centre gear</strong> — potentially interesting as a buy channel for PlanBit and for subcontracting on larger NL bids.</div>
+      <div class="cacts">
+        <a class="abt li" href="https://www.linkedin.com/in/toddzegers/" target="_blank">💼 LinkedIn</a>
+        <button class="abt done-btn" data-i="btn_met" onclick="cDone(this)">☐ Met</button>
+      </div>
+    </div>
+
+    <div class="crow" data-lens="erpie">
+      <div class="cname">Kevin Corrigan</div>
+      <div class="cco">CSO · CXtec</div>
+      <div class="csess">
+        <div class="csess-day">Day 2 · Thu 16 Apr · 11:15–12:00</div>
+        <div class="csess-name" data-i="c_kevin_sess">Channel Mastery: Winning with Marketplaces</div>
+        <div class="csess-quote" data-i="c_kevin_quote">Discussing how ITAD companies are using marketplace channels — eBay, Back Market — to move refurbished hardware at scale across Europe.</div>
+      </div>
+      <div class="clenses"><span class="lt er">⭐ ERPIE</span></div>
+      <div class="why-tabs">
+        <button class="why-tb on-er" onclick="whyTab(this,'kevin','er')" data-i="wb_er">⭐ ERPIE</button>
+      </div>
+      <div class="why-body" id="why-kevin" data-i="why_kevin_er">As CSO he <strong>shapes CXtec's commercial partnerships</strong>. If pricing intelligence is relevant to what they're building, he's the right person to explore that with — on his terms.</div>
+      <div class="cacts">
+        <a class="abt li" href="https://www.linkedin.com/in/kecorrigan/" target="_blank">💼 LinkedIn</a>
+        <button class="abt done-btn" data-i="btn_met" onclick="cDone(this)">☐ Met</button>
+      </div>
+    </div>
+
+    <div class="crow" data-lens="planbit">
+      <div class="cname">Kimberly Labanauskas</div>
+      <div class="cco">Global BD Manager · Sims Lifecycle Services</div>
+      <div class="csess">
+        <div class="csess-day">Day 2 · Thu 16 Apr · 15:00–15:45</div>
+        <div class="csess-name" data-i="c_kim_sess">Empowered Women: Crusading Your Journey in Tech</div>
+        <div class="csess-quote" data-i="c_kim_quote">Panel on leadership and career paths in ITAD and tech — Kimberly brings her perspective from 15+ years at Sims Lifecycle across global accounts.</div>
+      </div>
+      <div class="clenses"><span class="lt pb">🏭 PlanBit</span><span class="lt nl">🇳🇱 SLS NL</span></div>
+      <div class="why-tabs">
+        <button class="why-tb on-pb" onclick="whyTab(this,'kim','pb')" data-i="wb_pb">🏭 PlanBit</button>
+      </div>
+      <div class="why-body" id="why-kim" data-i="why_kim_pb">SLS Son en Breugel is 25km from PlanBit Geldermalsen. <strong>Subcontracting overflow and joint bids</strong> could make sense. Kimberly works closely with Jelle Slenters (Commercial Director NL).</div>
+      <div class="cacts">
+        <a class="abt li" href="https://www.linkedin.com/in/klab/" target="_blank">💼 LinkedIn</a>
+        <button class="abt done-btn" data-i="btn_met" onclick="cDone(this)">☐ Met</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="lsec">
+    <div class="slbl" data-i="pr_mid">🔵 High Value</div>
+
+    <div class="crow" data-lens="planbit erpie">
+      <div class="cname">Eric Ingebretsen</div>
+      <div class="cco">CCO · SK tes (world's #1 ITAD)</div>
+      <div class="csess">
+        <div class="csess-day">Day 1 · Wed 15 Apr · 11:15–12:00</div>
+        <div class="csess-name" data-i="c_eric_sess">Enterprise ITAD at Global Scale: Risk &amp; Revenue</div>
+        <div class="csess-quote" data-i="c_eric_quote">"Enterprise ITAD at scale is no longer just about equipment processing — it's about risk management, value optimisation, and operational discipline across the entire project lifecycle."</div>
+      </div>
+      <div class="clenses"><span class="lt pb">🏭 PlanBit</span><span class="lt er">⭐ ERPIE</span></div>
+      <div class="why-tabs">
+        <button class="why-tb on-pb" onclick="whyTab(this,'eric','pb')" data-i="wb_pb">🏭 PlanBit</button>
+        <button class="why-tb" onclick="whyTab(this,'eric','er')" data-i="wb_er">⭐ ERPIE</button>
+      </div>
+      <div class="why-body" id="why-eric" data-i="why_eric_pb">SK tes runs 40+ owned facilities — when enterprise clients have overflow or regional jobs, <strong>they often look for local partners</strong>. PlanBit's NL/Benelux position is relevant there.</div>
+      <div class="cacts">
+        <a class="abt li" href="https://www.linkedin.com/in/eric-ingebretsen-86b9943/" target="_blank">💼 LinkedIn</a>
+        <button class="abt done-btn" data-i="btn_met" onclick="cDone(this)">☐ Met</button>
+      </div>
+    </div>
+
+    <div class="crow" data-lens="planbit erpie">
+      <div class="cname">Carmen Ene</div>
+      <div class="cco">CEO · BNP Paribas 3 Step IT</div>
+      <div class="csess">
+        <div class="csess-day">Day 1 · Wed 15 Apr · 16:00–16:45</div>
+        <div class="csess-name" data-i="c_carmen_sess">Unlocking Circular Value in Asset Lifecycle</div>
+        <div class="csess-quote" data-i="c_carmen_quote">Panel on residual value strategy, circular business models, and how leasing and ITAD are converging — Carmen brings the BNP Paribas 3 Step IT joint-venture perspective on scaling circular IT across Europe.</div>
+      </div>
+      <div class="clenses"><span class="lt pb">🏭 PlanBit</span><span class="lt er">⭐ ERPIE</span></div>
+      <div class="why-tabs">
+        <button class="why-tb on-pb" onclick="whyTab(this,'carmen','pb')" data-i="wb_pb">🏭 PlanBit</button>
+        <button class="why-tb" onclick="whyTab(this,'carmen','er')" data-i="wb_er">⭐ ERPIE</button>
+      </div>
+      <div class="why-body" id="why-carmen" data-i="why_carmen_pb">3 Step IT manages <strong>2.2M+ devices for 4,000+ businesses</strong> and has NL operations. End-of-lease returns flow through remarketing channels — PlanBit could be a natural NL partner.</div>
+      <div class="cacts">
+        <a class="abt li" href="https://www.linkedin.com/in/carmen-ene/" target="_blank">💼 LinkedIn</a>
+        <button class="abt done-btn" data-i="btn_met" onclick="cDone(this)">☐ Met</button>
+      </div>
+    </div>
+
+    <div class="crow" data-lens="planbit">
+      <div class="cname">Antoine Barbry</div>
+      <div class="cco">EU Sales Director · Back Market</div>
+      <div class="csess">
+        <div class="csess-day">Day 2 · Thu 16 Apr · 11:15–12:00</div>
+        <div class="csess-name" data-i="c_ant_sess">Channel Mastery: Winning with Marketplaces</div>
+        <div class="csess-quote" data-i="c_ant_quote">Antoine covers Back Market's EU seller ecosystem — how ITAD companies and refurbishers work with Back Market Pro to reach consumers across 18 European markets.</div>
+      </div>
+      <div class="clenses"><span class="lt pb">🏭 PlanBit</span></div>
+      <div class="why-tabs">
+        <button class="why-tb on-pb" onclick="whyTab(this,'ant','pb')" data-i="wb_pb">🏭 PlanBit</button>
+      </div>
+      <div class="why-body" id="why-ant" data-i="why_ant_pb">Back Market is Europe's largest refurbished marketplace. <strong>PlanBit stock could potentially be sold through Back Market Pro</strong> — Antoine owns EU seller relationships and would know if that's feasible.</div>
+      <div class="cacts">
+        <a class="abt li" href="https://www.linkedin.com/in/antoine-barbry-4532b737/" target="_blank">💼 LinkedIn</a>
+        <button class="abt done-btn" data-i="btn_met" onclick="cDone(this)">☐ Met</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="lsec">
+    <div class="slbl" data-i="pr_lo">🟢 Worth Meeting</div>
+
+    <div class="crow" data-lens="planbit erpie">
+      <div class="cname">Riessen Hill</div>
+      <div class="cco">Head Group Asset Management · CHG-MERIDIAN</div>
+      <div class="csess" style="border-left-color:var(--blue)">
+        <div class="csess-day" style="color:var(--blue)">Day 2 · Thu 16 Apr · Speaker</div>
+        <div class="csess-name" data-i="c_riessen_sess">Global Policy: WEEE, Batteries &amp; Circular Mandates (13:00)</div>
+        <div class="csess-quote" data-i="c_riessen_quote">Riessen represents CHG-MERIDIAN's asset management perspective — one of Europe's largest IT leasing players with €2.2B+ lease originations and a 96% refurbishment rate.</div>
+      </div>
+      <div class="clenses"><span class="lt pb">🏭 PlanBit</span><span class="lt er">⭐ ERPIE</span></div>
+      <div class="why-tabs">
+        <button class="why-tb on-pb" onclick="whyTab(this,'riessen','pb')" data-i="wb_pb">🏭 PlanBit</button>
+        <button class="why-tb" onclick="whyTab(this,'riessen','er')" data-i="wb_er">⭐ ERPIE</button>
+      </div>
+      <div class="why-body" id="why-riessen" data-i="why_riessen_pb">CHG-MERIDIAN has €2.2B+ in lease originations with <strong>96% refurbishment ratio</strong>. End-of-lease stock flowing through NL remarketing channels = potentially relevant for PlanBit.</div>
+      <div class="cacts">
+        <a class="abt li" href="https://www.linkedin.com/in/riessen-hill-2/" target="_blank">💼 LinkedIn</a>
+        <button class="abt done-btn" data-i="btn_met" onclick="cDone(this)">☐ Met</button>
+      </div>
+    </div>
+
+    <div class="crow" data-lens="ai">
+      <div class="cname">Mike DiPetrillo</div>
+      <div class="cco">CEO · Layer IQ</div>
+      <div class="csess" style="border-left-color:var(--purp)">
+        <div class="csess-day" style="color:var(--purp)">Day 2 · Thu 16 Apr · 10:15–11:00</div>
+        <div class="csess-name" data-i="c_mike_sess">Critical Materials &amp; ITAD Intelligence</div>
+        <div class="csess-quote" data-i="c_mike_quote">Layer IQ applies AI to ITAD operations and intelligence. Mike will speak on how data and AI are changing the economics of circular tech and materials tracking.</div>
+      </div>
+      <div class="clenses"><span class="lt ai">🤖 AI/Tech</span></div>
+      <div class="why-tabs">
+        <button class="why-tb on-ai" onclick="whyTab(this,'mike','ai')" data-i="wb_ai">🤖 AI/Tech</button>
+      </div>
+      <div class="why-body" id="why-mike" data-i="why_mike_ai">Layer IQ is building AI tools for ITAD. <strong>Worth understanding what they're actually doing</strong> — pricing intelligence, compliance tracking, or something else. Useful context to understand where ERPIE sits in the landscape.</div>
+      <div class="cacts">
+        <button class="abt done-btn" data-i="btn_met" onclick="cDone(this)">☐ Met</button>
+      </div>
+    </div>
+
+    <div class="crow" data-lens="planbit">
+      <div class="cname">Martin Schuebel</div>
+      <div class="cco">Strategic BD Manager · eBay</div>
+      <div class="csess" style="border-left-color:var(--blue)">
+        <div class="csess-day" style="color:var(--blue)">Day 2 · Thu 16 Apr · 11:15–12:00</div>
+        <div class="csess-name" data-i="c_martin_sess">Channel Mastery: Winning with Marketplaces</div>
+        <div class="csess-quote" data-i="c_martin_quote">Martin covers eBay's B2B refurbished IT strategy in Europe — how the platform is working with ITAD companies and refurbishers to create a more professional secondary market.</div>
+      </div>
+      <div class="clenses"><span class="lt pb">🏭 PlanBit</span></div>
+      <div class="why-tabs">
+        <button class="why-tb on-pb" onclick="whyTab(this,'martin','pb')" data-i="wb_pb">🏭 PlanBit</button>
+      </div>
+      <div class="why-body" id="why-martin" data-i="why_martin_pb"><strong>eBay Business is a significant B2B outlet for refurbished IT</strong>. Martin handles strategic BD — worth a conversation about what the seller journey looks like for a company like PlanBit.</div>
+      <div class="cacts">
+        <button class="abt done-btn" data-i="btn_met" onclick="cDone(this)">☐ Met</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ PANE 3: KANBAN ══════ -->
+<div class="pane" id="pane-kanban">
+  <div class="kb-stats">
+    <div class="kb-st"><div class="kb-sn" style="color:var(--acc)" id="s-todo">8</div><div class="kb-sl" data-i="s_todo">To Do</div></div>
+    <div class="kb-st"><div class="kb-sn" style="color:var(--blue)" id="s-doing">3</div><div class="kb-sl" data-i="s_doing">In Progress</div></div>
+    <div class="kb-st"><div class="kb-sn" style="color:var(--grn)" id="s-done">0</div><div class="kb-sl" data-i="s_done">Done</div></div>
+  </div>
+  <div class="kb-nav">
+    <button class="kb-arrow" onclick="kbScroll(-1)">←</button>
+    <div class="kb-dots">
+      <div class="kb-dot on" id="kd-0"></div>
+      <div class="kb-dot" id="kd-1"></div>
+      <div class="kb-dot" id="kd-2"></div>
+    </div>
+    <button class="kb-arrow" onclick="kbScroll(1)">→</button>
+  </div>
+
+  <div class="kb-track" id="kbTrack">
+    <div class="kb-col" id="col-todo">
+      <div class="kb-ch todo"><span class="kb-cl" data-i="c_todo">To Do</span><span class="kb-cn" id="cc-todo">8</span></div>
+      <div class="kcard lens-both" id="kc-todd" data-state="todo"><div class="ctp p" data-i="lp_person">👤 Person</div><div class="kct">Todd Zegers</div><div class="kcs">CEO CXtec · <span data-i="k_todd_s">ITAD 3.0 · Day 1</span></div><div class="ltags"><span class="lt d1">Day 1 · 10:15</span><span class="lt pb" data-i="k_partner">🏭 Partner?</span><span class="lt er">⭐ ERPIE</span></div><button class="mbtn" data-i="btn_s" onclick="mv('kc-todd','doing')">▶ Start</button></div>
+      <div class="kcard lens-erpie" id="kc-kevin" data-state="todo"><div class="ctp p" data-i="lp_person">👤 Person</div><div class="kct">Kevin Corrigan</div><div class="kcs">CSO CXtec · <span data-i="k_kevin_s">Channel Mastery · Day 2</span></div><div class="ltags"><span class="lt d2">Day 2 · 11:15</span><span class="lt er">⭐ ERPIE</span></div><button class="mbtn" data-i="btn_s" onclick="mv('kc-kevin','doing')">▶ Start</button></div>
+      <div class="kcard lens-planbit" id="kc-kimberly" data-state="todo"><div class="ctp p" data-i="lp_person">👤 Person</div><div class="kct">Kimberly Labanauskas</div><div class="kcs">Sims Lifecycle · <span data-i="k_kim_s">BD Manager</span></div><div class="ltags"><span class="lt d2">Day 2 · 15:00</span><span class="lt nl">🇳🇱 SLS NL</span><span class="lt pb" data-i="k_sub">🏭 Subcontract</span></div><button class="mbtn" data-i="btn_s" onclick="mv('kc-kimberly','doing')">▶ Start</button></div>
+      <div class="kcard lens-both" id="kc-carmen" data-state="todo"><div class="ctp p" data-i="lp_person">👤 Person</div><div class="kct">Carmen Ene</div><div class="kcs">CEO BNP Paribas 3 Step IT · <span data-i="k_carmen_s">Day 1</span></div><div class="ltags"><span class="lt d1">Day 1 · 16:00</span><span class="lt pb" data-i="k_lease">🏭 Lease flow</span><span class="lt er">⭐ ERPIE</span></div><button class="mbtn" data-i="btn_s" onclick="mv('kc-carmen','doing')">▶ Start</button></div>
+      <div class="kcard lens-planbit" id="kc-antoine" data-state="todo"><div class="ctp p" data-i="lp_person">👤 Person</div><div class="kct">Antoine Barbry</div><div class="kcs">Back Market EU · <span data-i="k_ant_s">Channel Mastery · Day 2</span></div><div class="ltags"><span class="lt d2">Day 2 · 11:15</span><span class="lt pb" data-i="k_buyer">🏭 Buyer channel</span></div><button class="mbtn" data-i="btn_s" onclick="mv('kc-antoine','doing')">▶ Start</button></div>
+      <div class="kcard lens-ai" id="kc-mike" data-state="todo"><div class="ctp ai">🤖 AI Intel</div><div class="kct">Mike DiPetrillo</div><div class="kcs">CEO Layer IQ · <span data-i="k_mike_s">AI/ITAD · Day 2</span></div><div class="ltags"><span class="lt d2">Day 2 · 10:15</span><span class="lt ai">🤖 AI</span></div><button class="mbtn" data-i="btn_s" onclick="mv('kc-mike','doing')">▶ Start</button></div>
+      <div class="kcard lens-erpie" id="kc-makor" data-state="todo"><div class="ctp r" data-i="lp_recon">🔍 Competitor</div><div class="kct">Makor ERP stand</div><div class="kcs" data-i="k_makor_s">Walk past, note pitch</div><div class="ltags"><span class="lt er">⭐ vs ERPIE</span></div><button class="mbtn" data-i="btn_s" onclick="mv('kc-makor','doing')">▶ Start</button></div>
+      <div class="kcard lens-erpie" id="kc-razor" data-state="todo"><div class="ctp r" data-i="lp_recon">🔍 Competitor</div><div class="kct">RazorERP stand</div><div class="kcs" data-i="k_razor_s">Check demo / pricing</div><div class="ltags"><span class="lt er">⭐ vs ERPIE</span></div><button class="mbtn" data-i="btn_s" onclick="mv('kc-razor','doing')">▶ Start</button></div>
+    </div>
+
+    <div class="kb-col" id="col-doing">
+      <div class="kb-ch doing"><span class="kb-cl" data-i="c_doing">In Progress</span><span class="kb-cn" id="cc-doing">3</span></div>
+      <div class="kcard lens-ai" id="kc-mc" data-state="doing"><div class="ctp ai">🤖 AI Session</div><div class="kct" data-i="k_mc_t">AI Masterclass</div><div class="kcs" data-i="k_mc_s">AI-Driven Value Engines · Day 0</div><div class="ltags"><span class="lt d0">Apr 14 · 13:00</span><span class="lt ai">🤖 AI + ERPIE context</span></div><button class="mbtn" data-i="btn_d" onclick="mv('kc-mc','done')">✓ Done</button></div>
+      <div class="kcard lens-both" id="kc-li" data-state="doing"><div class="ctp p" data-i="lp_pre">📱 Pre-event</div><div class="kct" data-i="k_li_t">LinkedIn pre-connect</div><div class="kcs" data-i="k_li_s">Todd + Kevin before Apr 15</div><div class="ltags"><span class="lt d0" data-i="lt_before">Before</span></div><button class="mbtn" data-i="btn_d" onclick="mv('kc-li','done')">✓ Done</button></div>
+      <div class="kcard lens-erpie" id="kc-demo" data-state="doing"><div class="ctp s" data-i="lp_prep">📱 Prep</div><div class="kct" data-i="k_demo_t">ERPIE demo on phone</div><div class="kcs" data-i="k_demo_s">PriceFinder offline</div><div class="ltags"><span class="lt er">⭐ ERPIE</span></div><button class="mbtn" data-i="btn_d" onclick="mv('kc-demo','done')">✓ Done</button></div>
+    </div>
+
+    <div class="kb-col" id="col-done">
+      <div class="kb-ch done"><span class="kb-cl" data-i="c_done">Done</span><span class="kb-cn" id="cc-done">0</span></div>
+      <div id="done-empty" style="text-align:center;padding:22px 10px;color:var(--mu);font-size:11px;" data-i="done_e">Completed cards appear here ✓</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ PANE 4: TIPS ══════ -->
+<div class="pane" id="pane-tips">
+  <div class="tips">
+    <div class="tcard tm" data-lens="all planbit erpie ai"><div class="tico">🗂️</div><div><div class="ttl" data-i="tp0_t">Three lenses, one event</div><div class="tbd" data-i="tp0_b">The filters above let you see the event through three different lenses: <strong>PlanBit</strong> (partnerships, subcontracting, buy/sell channels), <strong>ERPIE</strong> (where pricing intelligence might be relevant), <strong>AI/Tech</strong> (what the market is doing on AI and data). Use whichever angle is useful — or just browse everything.</div></div></div>
+    <div class="tcard tp" data-lens="planbit all"><div class="tico">🍾</div><div><div class="ttl" data-i="tp1_t">Opening night reception (Day 1, 19:00)</div><div class="tbd" data-i="tp1_b">The rooftop reception tends to be the most relaxed moment of the whole event — people are fresh, drinks in hand, no agenda. Often where the more interesting conversations happen, without the formality of a session context.</div></div></div>
+    <div class="tcard tp" data-lens="planbit all"><div class="tico">🇳🇱</div><div><div class="ttl" data-i="tp2_t">Kimberly Labanauskas — Sims NL</div><div class="tbd" data-i="tp2_b">Sims has a facility in Son en Breugel, 25km from Geldermalsen. Kimberly works with <strong>Jelle Slenters</strong>, their Commercial Director in the Netherlands. Could be a natural conversation if it comes up.</div></div></div>
+    <div class="tcard te" data-lens="erpie all"><div class="tico">⚡</div><div><div class="ttl" data-i="tp3_t">After the ITAD 3.0 session (Day 1, 10:15)</div><div class="tbd" data-i="tp3_b">Todd Zegers and others speak about AI and value creation in ITAD. If the conversation heads that way, <strong>ERPIE would fit naturally into the topic</strong> — it's exactly what the session is about. No need to engineer it.</div></div></div>
+    <div class="tcard ta" data-lens="ai all"><div class="tico">🤖</div><div><div class="ttl" data-i="tp4_t">AI in ITAD — a genuinely interesting topic right now</div><div class="tbd" data-i="tp4_b">A lot of people at this event are thinking about what AI actually means for their operations. <strong>Asking how others are approaching pricing or asset valuation</strong> is a good conversation starter and often surfaces interesting perspectives.</div></div></div>
+    <div class="tcard te" data-lens="erpie all"><div class="tico">🔍</div><div><div class="ttl" data-i="tp5_t">Makor ERP and RazorERP are both here</div><div class="tbd" data-i="tp5_b">Both are ITAD software players — worth a walk past to see what they're showing and how they position themselves. Useful background regardless of whether ERPIE comes up in any conversations.</div></div></div>
+    <div class="tcard tp" data-lens="planbit all"><div class="tico">🏭</div><div><div class="ttl" data-i="tp6_t">Enterprise overflow and subcontracting</div><div class="tbd" data-i="tp6_b">The bigger players — SK tes, Iron Mountain, SLS — regularly have <strong>enterprise jobs in regions where they need local partners</strong>. NL/Benelux is a natural fit for PlanBit. Worth keeping in mind when talking to people from those organisations.</div></div></div>
+    <div class="tcard tp" data-lens="planbit all"><div class="tico">📱</div><div><div class="ttl" data-i="tp7_t">Lease returns as a source of stock</div><div class="tbd" data-i="tp7_b">Carmen Ene (3 Step IT) and Riessen Hill (CHG-MERIDIAN) both work with large volumes of end-of-lease devices. <strong>These often need a remarketing partner in the local market</strong> — PlanBit's Benelux position is relevant there.</div></div></div>
+    <div class="tcard ta" data-lens="planbit erpie all"><div class="tico">🎙️</div><div><div class="ttl" data-i="tp8_t">Channel Mastery session (Day 2, 11:15)</div><div class="tbd" data-i="tp8_b">Kevin Corrigan (CXtec), Antoine Barbry (Back Market), Daniel Krüger (eBay Germany) all in one panel. Covers marketplace dynamics and buyer channels. <strong>Relevant for both PlanBit's sales channels and understanding where ERPIE-style pricing intelligence fits.</strong></div></div></div>
+  </div>
+</div>
+
+<!-- ══════ PANE 5: NICE ══════ -->
+<div class="pane" id="pane-nice">
+  <div class="nice-hero">
+    <div class="nice-title">🌊 Nice, France</div>
+    <div class="nice-sub">April 2026 · Côte d'Azur · 20–22°C expected<br>Oceanice Convention Centre · Promenade des Anglais area</div>
+  </div>
+  <div class="nice-grid">
+
+    <div class="nice-card full">
+      <div class="nice-ico">🌤️</div>
+      <div class="nice-ctitle" data-i="nc_weather">Weather &amp; Getting Around</div>
+      <div class="nice-cbody" data-i="nc_weather_b">Mid-April in Nice is genuinely pleasant — <strong>18–22°C</strong>, mostly sunny, low chance of rain. Light jacket for evenings. The city centre is very walkable. Tram line 2 runs along the Promenade. Taxis are reliable and not expensive. Airport is 7km from centre — about €25 by taxi.</div>
+    </div>
+
+    <div class="nice-card">
+      <div class="nice-ico">🍽️</div>
+      <div class="nice-ctitle" data-i="nc_food">Local food worth trying</div>
+      <ul class="nice-list" data-i="nc_food_list">
+        <li><span>Socca</span> — chickpea pancake, Nice street food classic</li>
+        <li><span>Pan bagnat</span> — the local take on a salade niçoise sandwich</li>
+        <li><span>Pissaladière</span> — onion tart with anchovies &amp; olives</li>
+        <li><span>Daube niçoise</span> — slow-cooked beef stew, Provençal style</li>
+        <li><span>Rosé wines</span> — Provence produces half of France's rosé</li>
+      </ul>
+    </div>
+
+    <div class="nice-card">
+      <div class="nice-ico">📍</div>
+      <div class="nice-ctitle" data-i="nc_areas">Neighbourhoods</div>
+      <ul class="nice-list" data-i="nc_areas_list">
+        <li><span>Vieux-Nice</span> — old town, narrow streets, evening restaurants</li>
+        <li><span>Promenade des Anglais</span> — 7km seafront walk</li>
+        <li><span>Le Port</span> — quieter, good seafood restaurants</li>
+        <li><span>Cimiez</span> — Matisse museum, Roman ruins, uphill</li>
+      </ul>
+    </div>
+
+    <div class="nice-card full">
+      <div class="nice-ico">🥂</div>
+      <div class="nice-ctitle" data-i="nc_eve">Evening — ITAD on the Town (Day 2)</div>
+      <div class="nice-cbody" data-i="nc_eve_b">The event's official evening is at <strong>Chez Simon</strong> and <strong>Perlone</strong> in the old town — both are well-regarded spots, good food, informal atmosphere. The old town is best explored on foot; streets are narrow and GPS gets confused. Expect noise and atmosphere.</div>
+    </div>
+
+    <div class="nice-card">
+      <div class="nice-ico">💡</div>
+      <div class="nice-ctitle" data-i="nc_facts">A few things about Nice</div>
+      <div class="nice-cbody" data-i="nc_facts_b">Nice only became officially French in <strong>1860</strong> — it was part of the Kingdom of Sardinia before that. The local dialect (Niçard) is closer to Italian than French. The city has the second-busiest airport in France after Paris. And the Promenade des Anglais was literally built by English tourists in the 19th century who wanted a place to walk.</div>
+    </div>
+
+    <div class="nice-card">
+      <div class="nice-ico">☀️</div>
+      <div class="nice-ctitle" data-i="nc_beach">Beach &amp; outdoors</div>
+      <div class="nice-cbody" data-i="nc_beach_b">Nice beaches are <strong>pebbles, not sand</strong> — bring shoes you can slip off easily. The water is clear and already 17–18°C in April (cold but swimmable for the brave). Castle Hill (<em>Colline du Château</em>) is a 10-minute walk up for a remarkable view over the bay — worth it if you have 45 minutes free.</div>
+    </div>
+
+    <div class="nice-card full">
+      <div class="nice-ico">🗺️</div>
+      <div class="nice-ctitle" data-i="nc_practical">Practical notes</div>
+      <div class="nice-cbody" data-i="nc_practical_b"><strong>Language:</strong> French is default but English works well in tourist areas and hospitality. A simple <em>"Bonjour"</em> before speaking English goes a long way.<br><br><strong>Payment:</strong> Cards accepted everywhere, but some old-town stalls prefer cash.<br><br><strong>Time zone:</strong> CEST — same as Netherlands (UTC+2 in April).<br><br><strong>Emergency:</strong> 15 (SAMU medical), 17 (police), 18 (fire), 112 (EU general).</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ── TRANSLATIONS ── */
+const T={
+en:{
+  lens_all:'🔍 All',lens_pb:'🏭 PlanBit',lens_er:'⭐ ERPIE',lens_ai:'🤖 AI/Tech',
+  t_ag:'Agenda',t_ppl:'People',t_kb:'Kanban',t_tips:'Tips',t_nice:'Nice',
+  s_todo:'To Do',s_doing:'In Progress',s_done:'Done',
+  c_todo:'To Do',c_doing:'In Progress',c_done:'Done',
+  lp_person:'👤 Person',lp_pre:'📱 Pre-event',lp_prep:'📱 Prep',lp_recon:'🔍 Competitor',
+  btn_s:'▶ Start',btn_d:'✓ Done',btn_u:'↩ Undo',btn_met:'☐ Met',btn_met_c:'✓ Met!',
+  done_e:'Completed cards appear here ✓',
+  wb_pb:'🏭 PlanBit',wb_er:'⭐ ERPIE',wb_ai:'🤖 AI/Tech',
+  pr_hi:'🔴 Top Priority',pr_mid:'🔵 High Value',pr_lo:'🟢 Worth Meeting',
+  k_partner:'🏭 Partner?',k_sub:'🏭 Subcontract',k_lease:'🏭 Lease flow',k_buyer:'🏭 Buyer channel',
+  k_todd_s:'ITAD 3.0 · Day 1',k_kevin_s:'Channel Mastery · Day 2',k_kim_s:'BD Manager',
+  k_carmen_s:'Circular Value · Day 1',k_ant_s:'Channel Mastery · Day 2',k_mike_s:'AI/ITAD · Day 2',
+  k_makor_s:'Walk past, note pitch',k_razor_s:'Check demo / pricing',
+  k_mc_t:'AI Masterclass',k_mc_s:'AI-Driven Value Engines · Day 0',
+  k_li_t:'LinkedIn pre-connect',k_li_s:'Todd + Kevin before Apr 15',
+  k_demo_t:'ERPIE demo on phone',k_demo_s:'PriceFinder offline',lt_before:'Before',
+  c_todd_sess:'ITAD 3.0: AI, Capital & Carbon',
+  c_todd_quote:'"The opportunity to grow and work with more partners to optimise their IT hardware management in a sustainable and cost-effective manner is limitless."',
+  c_kevin_sess:'Channel Mastery: Winning with Marketplaces',
+  c_kevin_quote:"Discussing how ITAD companies are using marketplace channels — eBay, Back Market — to move refurbished hardware at scale across Europe.",
+  c_kim_sess:'Empowered Women: Crusading Your Journey in Tech',
+  c_kim_quote:"Panel on leadership and career paths in ITAD and tech — Kimberly brings her perspective from 15+ years at Sims Lifecycle across global accounts.",
+  c_eric_sess:'Enterprise ITAD at Global Scale: Risk & Revenue',
+  c_eric_quote:'"Enterprise ITAD at scale is no longer just about equipment processing — it\'s about risk management, value optimisation, and operational discipline across the entire project lifecycle."',
+  c_carmen_sess:'Unlocking Circular Value in Asset Lifecycle',
+  c_carmen_quote:"Panel on residual value strategy, circular business models, and how leasing and ITAD are converging — Carmen brings the BNP Paribas 3 Step IT perspective on scaling circular IT across Europe.",
+  c_ant_sess:'Channel Mastery: Winning with Marketplaces',
+  c_ant_quote:"Antoine covers Back Market's EU seller ecosystem — how ITAD companies and refurbishers work with Back Market Pro to reach consumers across 18 European markets.",
+  c_riessen_sess:'Global Policy: WEEE, Batteries & Circular Mandates (13:00)',
+  c_riessen_quote:"Riessen represents CHG-MERIDIAN's asset management perspective — one of Europe's largest IT leasing players with €2.2B+ lease originations and a 96% refurbishment rate.",
+  c_mike_sess:'Critical Materials & ITAD Intelligence',
+  c_mike_quote:"Layer IQ applies AI to ITAD operations and intelligence. Mike speaks on how data and AI are changing the economics of circular tech and materials tracking.",
+  c_martin_sess:'Channel Mastery: Winning with Marketplaces',
+  c_martin_quote:"Martin covers eBay's B2B refurbished IT strategy in Europe — how the platform works with ITAD companies and refurbishers to create a more professional secondary market.",
+  why_todd_pb:'Ex-Ingram Micro VP ITAD with a deep European network. <strong>CXtec processes high-value data centre gear</strong> — potentially interesting as a buy channel for PlanBit and for subcontracting on larger NL bids.',
+  why_todd_er:'Todd has spent two decades thinking about ITAD pricing and value recovery at scale. <strong>If ERPIE comes up, he\'s one of the most credible people to have that conversation with</strong> — both as a potential user and as someone whose perspective on the product would be genuinely valuable.',
+  why_kevin_er:'As CSO he <strong>shapes CXtec\'s commercial partnerships</strong>. If pricing intelligence is relevant to what they\'re building, he\'s the right person to explore that with — on his terms.',
+  why_kim_pb:'SLS Son en Breugel is 25km from PlanBit Geldermalsen. <strong>Subcontracting overflow and joint bids</strong> could make sense. Kimberly works closely with Jelle Slenters (Commercial Director NL).',
+  why_eric_pb:'SK tes runs 40+ owned facilities — when enterprise clients have overflow or regional jobs, <strong>they often look for local partners</strong>. PlanBit\'s NL/Benelux position is relevant there.',
+  why_eric_er:'SK tes has built internal pricing systems. <strong>Interesting to understand how they think about pricing consistency across 40+ facilities</strong> — and whether external tools like ERPIE would even be on their radar.',
+  why_carmen_pb:'3 Step IT manages <strong>2.2M+ devices for 4,000+ businesses</strong> and has NL operations. End-of-lease returns flow through remarketing channels — PlanBit could be a natural NL partner.',
+  why_carmen_er:'3 Step IT works with residual values at scale. <strong>Understanding how they currently validate market conformity</strong> of their residual models is interesting context.',
+  why_ant_pb:'Back Market is Europe\'s largest refurbished marketplace. <strong>PlanBit stock could potentially be sold through Back Market Pro</strong> — Antoine owns EU seller relationships and would know if that\'s feasible.',
+  why_riessen_pb:'CHG-MERIDIAN has €2.2B+ in lease originations with <strong>96% refurbishment ratio</strong>. End-of-lease stock flowing through NL remarketing channels = potentially relevant for PlanBit.',
+  why_riessen_er:'CHG-MERIDIAN\'s business is built on residual value accuracy. <strong>Interesting to understand how they currently benchmark</strong> — internal models, external tools, or something else entirely.',
+  why_mike_ai:'Layer IQ is building AI tools for ITAD. <strong>Worth understanding what they\'re actually doing</strong> — pricing intelligence, compliance tracking, or something else. Useful context for understanding where ERPIE sits in the landscape.',
+  why_martin_pb:'<strong>eBay Business is a significant B2B outlet for refurbished IT</strong>. Martin handles strategic BD — worth a conversation about what the seller journey looks like for a company like PlanBit.',
+  dn0:'Day 0',dn1:'Day 1',dn2:'Day 2',
+  s_mc:'⚡ AI Masterclass: Intelligent ITAD → AI-Driven Value Engines',s_ws:'Workshop: ITAD → Full Circular Lifecycle Org',s_kn1:'Joint Keynote: Global Lifecycle Revolution 2030',s_3:'🔴 ITAD 3.0: AI, Capital & Carbon',s_ent:'🔵 Enterprise ITAD at Global Scale',s_era:'Next-Gen Data Erasure & Chain of Custody',s_hw:'Enterprise Hardware Lifecycle: OEM to End-of-Life',s_cv:'🔴 Unlocking Circular Value in Asset Lifecycle',s_rt:'🍾 Opening Night Rooftop Reception',s_rt_sub:'Best networking of the event — arrive early!',s_lnv:'Joint Keynote: Lenovo Sustainability Solutions',s_cm:'🤖 Critical Materials & ITAD Intelligence',s_ch:'🔴 Channel Mastery: Marketplaces in Modern ITAD',s_pol:'Global Policy: WEEE, Batteries & Circular Mandates',s_pn:'Building a Reliable International Partner Network',s_wm:'🔴 Empowered Women — Careers in Ever-Changing Tech',s_esg:'ITAD + ESG: The Next Billion-Dollar Opportunity',s_on:'🥂 ITAD on the Town — Old Nice',
+  sf_must:'MUST ATTEND',sf_net:'NETWORKING',
+  tp0_t:'Three lenses, one event',tp0_b:'The filters above let you see the event through three different lenses: <strong>PlanBit</strong> (partnerships, subcontracting, buy/sell channels), <strong>ERPIE</strong> (where pricing intelligence might be relevant), <strong>AI/Tech</strong> (what the market is doing on AI and data). Use whichever angle is useful — or just browse everything.',
+  tp1_t:'Opening night reception (Day 1, 19:00)',tp1_b:'The rooftop reception tends to be the most relaxed moment of the whole event — people are fresh, drinks in hand, no agenda. Often where the more interesting conversations happen, without the formality of a session context.',
+  tp2_t:'Kimberly Labanauskas — Sims NL',tp2_b:'Sims has a facility in Son en Breugel, 25km from Geldermalsen. Kimberly works with <strong>Jelle Slenters</strong>, their Commercial Director in the Netherlands. Could be a natural conversation if it comes up.',
+  tp3_t:'After the ITAD 3.0 session (Day 1, 10:15)',tp3_b:'Todd Zegers and others speak about AI and value creation in ITAD. If the conversation heads that way, <strong>ERPIE would fit naturally into the topic</strong> — it\'s exactly what the session is about. No need to engineer it.',
+  tp4_t:'AI in ITAD — a genuinely interesting topic right now',tp4_b:'A lot of people at this event are thinking about what AI actually means for their operations. <strong>Asking how others are approaching pricing or asset valuation</strong> is a good conversation starter and often surfaces interesting perspectives.',
+  tp5_t:'Makor ERP and RazorERP are both here',tp5_b:'Both are ITAD software players — worth a walk past to see what they\'re showing and how they position themselves. Useful background regardless of whether ERPIE comes up in any conversations.',
+  tp6_t:'Enterprise overflow and subcontracting',tp6_b:'The bigger players — SK tes, Iron Mountain, SLS — regularly have <strong>enterprise jobs in regions where they need local partners</strong>. NL/Benelux is a natural fit for PlanBit. Worth keeping in mind when talking to people from those organisations.',
+  tp7_t:'Lease returns as a source of stock',tp7_b:'Carmen Ene (3 Step IT) and Riessen Hill (CHG-MERIDIAN) both work with large volumes of end-of-lease devices. <strong>These often need a remarketing partner in the local market</strong> — PlanBit\'s Benelux position is relevant there.',
+  tp8_t:'Channel Mastery session (Day 2, 11:15)',tp8_b:'Kevin Corrigan (CXtec), Antoine Barbry (Back Market), Daniel Krüger (eBay Germany) all in one panel. Covers marketplace dynamics and buyer channels. <strong>Relevant for both PlanBit\'s sales channels and understanding where ERPIE-style pricing intelligence fits.</strong>',
+  nc_weather:'Weather & Getting Around',nc_weather_b:'Mid-April in Nice is genuinely pleasant — <strong>18–22°C</strong>, mostly sunny, low chance of rain. Light jacket for evenings. The city centre is very walkable. Tram line 2 runs along the Promenade. Taxis are reliable and not expensive. Airport is 7km from centre — about €25 by taxi.',
+  nc_food:'Local food worth trying',nc_food_list:'<li><span>Socca</span> — chickpea pancake, Nice street food classic</li><li><span>Pan bagnat</span> — the local take on a salade niçoise sandwich</li><li><span>Pissaladière</span> — onion tart with anchovies & olives</li><li><span>Daube niçoise</span> — slow-cooked beef stew, Provençal style</li><li><span>Rosé wines</span> — Provence produces half of France\'s rosé</li>',
+  nc_areas:'Neighbourhoods',nc_areas_list:'<li><span>Vieux-Nice</span> — old town, narrow streets, evening restaurants</li><li><span>Promenade des Anglais</span> — 7km seafront walk</li><li><span>Le Port</span> — quieter, good seafood restaurants</li><li><span>Cimiez</span> — Matisse museum, Roman ruins, uphill</li>',
+  nc_eve:'Evening — ITAD on the Town (Day 2)',nc_eve_b:'The event\'s official evening is at <strong>Chez Simon</strong> and <strong>Perlone</strong> in the old town — both are well-regarded spots, good food, informal atmosphere. The old town is best explored on foot; streets are narrow and GPS gets confused. Expect noise and atmosphere.',
+  nc_facts:'A few things about Nice',nc_facts_b:'Nice only became officially French in <strong>1860</strong> — it was part of the Kingdom of Sardinia before that. The local dialect (Niçard) is closer to Italian than French. The city has the second-busiest airport in France after Paris. And the Promenade des Anglais was literally built by English tourists in the 19th century who wanted a place to walk.',
+  nc_beach:'Beach & outdoors',nc_beach_b:'Nice beaches are <strong>pebbles, not sand</strong> — bring shoes you can slip off easily. The water is clear and already 17–18°C in April (cold but swimmable for the brave). Castle Hill (<em>Colline du Château</em>) is a 10-minute walk up for a remarkable view over the bay — worth it if you have 45 minutes free.',
+  nc_practical:'Practical notes',nc_practical_b:'<strong>Language:</strong> French is default but English works well in tourist areas. A simple <em>"Bonjour"</em> before English goes a long way.<br><br><strong>Payment:</strong> Cards accepted everywhere, but some old-town stalls prefer cash.<br><br><strong>Time zone:</strong> CEST — same as Netherlands (UTC+2 in April).<br><br><strong>Emergency:</strong> 15 (SAMU medical), 17 (police), 18 (fire), 112 (EU general).',
+},
+nl:{
+  lens_all:'🔍 Alles',lens_pb:'🏭 PlanBit',lens_er:'⭐ ERPIE',lens_ai:'🤖 AI/Tech',
+  t_ag:'Agenda',t_ppl:'Personen',t_kb:'Kanban',t_tips:'Tips',t_nice:'Nice',
+  s_todo:'Te doen',s_doing:'Bezig',s_done:'Klaar',c_todo:'Te Doen',c_doing:'Bezig',c_done:'Klaar',
+  lp_person:'👤 Persoon',lp_pre:'📱 Voorbereiding',lp_prep:'📱 Voorbereiding',lp_recon:'🔍 Concurrent',
+  btn_s:'▶ Starten',btn_d:'✓ Klaar',btn_u:'↩ Ongedaan',btn_met:'☐ Gesproken',btn_met_c:'✓ Gesproken!',
+  done_e:'Voltooide kaarten verschijnen hier ✓',
+  wb_pb:'🏭 PlanBit',wb_er:'⭐ ERPIE',wb_ai:'🤖 AI/Tech',
+  pr_hi:'🔴 Topprioriteit',pr_mid:'🔵 Hoge waarde',pr_lo:'🟢 Interessant',
+  k_partner:'🏭 Partner?',k_sub:'🏭 Subcontract',k_lease:'🏭 Leaseflow',k_buyer:'🏭 Verkoopkanaal',
+  k_todd_s:'ITAD 3.0 · Dag 1',k_kevin_s:'Channel Mastery · Dag 2',k_kim_s:'BD Manager',k_carmen_s:'Circulaire waarde · Dag 1',k_ant_s:'Channel Mastery · Dag 2',k_mike_s:'AI/ITAD · Dag 2',
+  k_makor_s:'Stand bezoeken, pitch noteren',k_razor_s:'Demo/pricing bekijken',
+  k_mc_t:'AI Masterclass',k_mc_s:'AI-gestuurde waardecreatie · Dag 0',k_li_t:'LinkedIn pre-connect',k_li_s:'Todd + Kevin vóór 15 apr',k_demo_t:'ERPIE demo op telefoon',k_demo_s:'PriceFinder offline geladen',lt_before:'Voor event',
+  c_todd_sess:'ITAD 3.0: AI, Kapitaal & Carbon',c_todd_quote:'"De kans om samen te werken met meer partners om hun IT-hardwarebeheer op een duurzame en kosteneffectieve manier te optimaliseren is grenzeloos."',
+  c_kevin_sess:'Channel Mastery: Winnen met Marketplaces',c_kevin_quote:'Bespreking van hoe ITAD-bedrijven marketplace-kanalen — eBay, Back Market — gebruiken om refurbished hardware op schaal door Europa te bewegen.',
+  c_kim_sess:'Empowered Women: Jouw Loopbaan in de Tech',c_kim_quote:'Panel over leiderschap en carrièrepaden in ITAD en tech — Kimberly brengt haar perspectief van 15+ jaar bij Sims Lifecycle mee.',
+  c_eric_sess:'Enterprise ITAD op Wereldschaal: Risico & Opbrengst',c_eric_quote:'"Enterprise ITAD op schaal draait allang niet meer alleen om apparatuurverwerking — het gaat om risicomanagement, waardeoptimalisatie en operationele discipline over de gehele projectlevenscyclus."',
+  c_carmen_sess:'Circulaire Waarde Ontsluiten in Asset Lifecycle',c_carmen_quote:'Panel over restwaardestrategie en circulaire bedrijfsmodellen — Carmen brengt het BNP Paribas 3 Step IT-perspectief mee.',
+  c_ant_sess:'Channel Mastery: Winnen met Marketplaces',c_ant_quote:'Antoine bespreekt het EU-verkopers-ecosysteem van Back Market — hoe ITAD-bedrijven via Back Market Pro consumenten bereiken in 18 Europese markten.',
+  c_riessen_sess:'Globaal Beleid: WEEE, Batterijen & Circulaire Mandaten (13:00)',c_riessen_quote:'Riessen vertegenwoordigt het assetmanagement-perspectief van CHG-MERIDIAN — een van de grootste IT-leasingspelers van Europa.',
+  c_mike_sess:'Kritieke Materialen & ITAD Intelligence',c_mike_quote:'Layer IQ past AI toe op ITAD-operaties. Mike spreekt over hoe data en AI de economie van circulaire tech veranderen.',
+  c_martin_sess:'Channel Mastery: Winnen met Marketplaces',c_martin_quote:"Martin bespreekt eBay's B2B refurbished IT-strategie in Europa — hoe het platform samenwerkt met ITAD-bedrijven om een professionelere secundaire markt te creëren.",
+  why_todd_pb:'Ex-Ingram Micro VP ITAD met een diep Europees netwerk. <strong>CXtec verwerkt hoogwaardige datacenter hardware</strong> — potentieel interessant als inkoopkanaal voor PlanBit en voor subcontracting op grotere NL-biedingen.',
+  why_todd_er:'Todd heeft twee decennia nagedacht over ITAD-pricing op schaal. <strong>Als ERPIE ter sprake komt, is hij een van de meest interessante gesprekspartners</strong> — zowel als potentiële gebruiker als iemand wiens perspectief op het product waarde heeft.',
+  why_kevin_er:'Als CSO <strong>bepaalt hij de commerciële partnerships bij CXtec</strong>. Als pricing intelligence relevant is voor wat ze bouwen, is hij de juiste persoon om dat mee te verkennen.',
+  why_kim_pb:'SLS Son en Breugel ligt 25km van PlanBit Geldermalsen. <strong>Subcontracting en gezamenlijke biedingen</strong> kunnen zinvol zijn. Kimberly werkt nauw samen met Jelle Slenters (Commercial Director NL).',
+  why_eric_pb:'SK tes heeft 40+ vestigingen — bij enterprise-klanten met overflow <strong>zoeken ze vaak lokale partners</strong>. PlanBit\'s NL/Benelux-positie is daar relevant.',
+  why_eric_er:'SK tes heeft interne pricing-systemen gebouwd. <strong>Interessant om te begrijpen hoe ze denken over prijsconsistentie over 40+ vestigingen</strong>.',
+  why_carmen_pb:'3 Step IT beheert <strong>2,2M+ devices voor 4.000+ bedrijven</strong> en heeft NL-activiteiten. Einde-lease returns vloeien via remarketing — PlanBit kan die NL-partner zijn.',
+  why_carmen_er:'3 Step IT werkt op grote schaal met restwaarden. <strong>Begrijpen hoe ze momenteel de marktconformiteit valideren</strong> is interessante context.',
+  why_ant_pb:'Back Market is de grootste refurbished marketplace van Europa. <strong>PlanBit-stock via Back Market Pro</strong> — Antoine weet of dat haalbaar is.',
+  why_riessen_pb:'CHG-MERIDIAN heeft €2,2 mrd+ aan leaseoriginaties met <strong>96% refurbishment ratio</strong>. Einde-lease stock in NL = potentieel relevant voor PlanBit.',
+  why_riessen_er:'CHG-MERIDIAN\'s business draait op nauwkeurige restwaarden. <strong>Interessant om te begrijpen hoe ze nu benchmarken</strong>.',
+  why_mike_ai:'Layer IQ bouwt AI-tools voor ITAD. <strong>De moeite waard om te begrijpen wat ze precies doen</strong> — nuttige context om te zien waar ERPIE in het landschap past.',
+  why_martin_pb:'<strong>eBay Business is een groot B2B-kanaal voor refurbished IT</strong>. Martin doet strategic BD — interessant gesprek over hoe het voor een bedrijf als PlanBit werkt.',
+  dn0:'Dag 0',dn1:'Dag 1',dn2:'Dag 2',
+  s_mc:'⚡ AI Masterclass: Van ITAD naar AI-Gestuurde Waardecreatie',s_ws:'Workshop: ITAD → Volledig Circulaire Lifecycle Org',s_kn1:'Gezamenlijke Keynote: Mondiale Lifecycle Revolutie 2030',s_3:'🔴 ITAD 3.0: AI, Kapitaal & Carbon',s_ent:'🔵 Enterprise ITAD op Wereldschaal',s_era:'Next-Gen Datawissing & Chain of Custody',s_hw:'Enterprise Hardware Lifecycle: OEM tot End-of-Life',s_cv:'🔴 Circulaire Waarde Ontsluiten',s_rt:'🍾 Openingsavond Dakterrasreceptie',s_rt_sub:'Beste netwerkmoment — wees er vroeg bij!',s_lnv:'Gezamenlijke Keynote: Lenovo Duurzaamheid',s_cm:'🤖 Kritieke Materialen & ITAD Intelligence',s_ch:'🔴 Channel Mastery: Marketplaces in Modern ITAD',s_pol:'Globaal Beleid: WEEE, Batterijen & Circulaire Mandaten',s_pn:'Een Betrouwbaar Internationaal Partnernetwerk Opbouwen',s_wm:'🔴 Geëmancipeerde Vrouwen in Tech',s_esg:'ITAD + ESG: De Volgende Miljard-Dollar Kans',s_on:'🥂 ITAD in de Stad — Oud-Nice',
+  sf_must:'VERPLICHT',sf_net:'NETWERKEN',
+  tp0_t:'Drie lenzen, één event',tp0_b:'De filters bovenaan laten je het event door drie verschillende lenzen bekijken: <strong>PlanBit</strong> (partnerships, subcontracting, in- en verkoopkanalen), <strong>ERPIE</strong> (waar pricing intelligence relevant kan zijn), <strong>AI/Tech</strong> (wat de markt doet op het gebied van AI en data). Gebruik wat nuttig is — of blader gewoon door alles.',
+  tp1_t:'Openingsavond receptie (Dag 1, 19:00)',tp1_b:'De dakterrasreceptie is doorgaans het meest ontspannen moment — mensen zijn fris, glas in de hand, geen agenda. Hier ontstaan vaak de interessantere gesprekken.',
+  tp2_t:'Kimberly Labanauskas — Sims NL',tp2_b:'Sims heeft een vestiging in Son en Breugel, 25km van Geldermalsen. Kimberly werkt samen met <strong>Jelle Slenters</strong>, hun Commercial Director in Nederland.',
+  tp3_t:'Na de ITAD 3.0 sessie (Dag 1, 10:15)',tp3_b:'Als het gesprek die kant op gaat, <strong>past ERPIE er van nature in</strong> — het is precies wat de sessie over gaat. Hoeft niet geforceerd.',
+  tp4_t:'AI in ITAD — op dit moment een echt interessant onderwerp',tp4_b:'<strong>Vragen hoe anderen omgaan met pricing of asset-waardering</strong> is een goede gespreksopener en levert vaak interessante inzichten op.',
+  tp5_t:'Makor ERP en RazorERP zijn beide aanwezig',tp5_b:'Beide zijn ITAD-softwarespelers — de moeite waard om langs te lopen en te zien wat ze tonen en hoe ze zichzelf positioneren.',
+  tp6_t:'Enterprise overflow en subcontracting',tp6_b:'De grotere spelers hebben regelmatig <strong>enterprise-opdrachten in regio\'s waar ze lokale partners nodig hebben</strong>. NL/Benelux is een logische match voor PlanBit.',
+  tp7_t:'Lease-retouren als bron van stock',tp7_b:'Carmen Ene en Riessen Hill werken met grote volumes einde-lease devices. <strong>Die hebben vaak een remarketingpartner in de lokale markt nodig</strong> — PlanBit\'s Benelux-positie is daar relevant.',
+  tp8_t:'Channel Mastery sessie (Dag 2, 11:15)',tp8_b:'Kevin Corrigan, Antoine Barbry, Daniel Krüger in één panel. Relevant voor zowel <strong>PlanBit\'s verkoopkanalen als inzicht in waar ERPIE-achtige pricing intelligence past.</strong>',
+  nc_weather:'Weer & Vervoer',nc_weather_b:'Half april in Nice is aangenaam — <strong>18–22°C</strong>, overwegend zonnig. Lichte jas voor \'s avonds. Centrum is goed te lopen. Tram lijn 2 langs de Promenade. Vliegveld 7km van centrum — circa €25 per taxi.',
+  nc_food:'Lokale gerechten',nc_food_list:'<li><span>Socca</span> — kikkererwtencrêpe, straatklassieker van Nice</li><li><span>Pan bagnat</span> — de lokale variant op een salade niçoise-broodje</li><li><span>Pissaladière</span> — uientaart met ansjovis & olijven</li><li><span>Daube niçoise</span> — langzaam gestoofde rundvleesstoofpot</li><li><span>Roséwijnen</span> — de Provence produceert de helft van alle Franse rosé</li>',
+  nc_areas:'Buurten',nc_areas_list:'<li><span>Vieux-Nice</span> — oude stad, smalle straatjes, avondrestaurants</li><li><span>Promenade des Anglais</span> — 7km promenade langs zee</li><li><span>Le Port</span> — rustiger, goede zeevruchtenrestaurants</li><li><span>Cimiez</span> — Matisse-museum, Romeinse ruïnes, heuvelwaarts</li>',
+  nc_eve:'Avond — ITAD in de Stad (Dag 2)',nc_eve_b:'Het officiële avondprogramma is bij <strong>Chez Simon</strong> en <strong>Perlone</strong> in de oude stad — beide gewaardeerde plekken, goed eten, informele sfeer. De oude stad is het beste lopend te verkennen; straten zijn smal en GPS raakt in de war.',
+  nc_facts:'Wetenswaardigheden over Nice',nc_facts_b:'Nice werd pas officieel Frans in <strong>1860</strong> — daarvoor was het onderdeel van het Koninkrijk Sardinië. Het lokale dialect (Niçard) ligt dichter bij het Italiaans dan bij het Frans. De stad heeft de op één na drukste luchthaven van Frankrijk na Parijs. De Promenade des Anglais werd letterlijk aangelegd door Engelse toeristen in de 19e eeuw.',
+  nc_beach:'Strand & buiten',nc_beach_b:'Nice-stranden hebben <strong>keien, geen zand</strong> — neem schoenen mee die je makkelijk uit kunt doen. Het water is helder en al 17–18°C in april. Castle Hill (<em>Colline du Château</em>) is een 10 minuten lopen — een geweldig uitzicht over de baai waard.',
+  nc_practical:'Praktische info',nc_practical_b:'<strong>Taal:</strong> Frans is de standaard maar Engels werkt goed in toeristische gebieden. Een simpel <em>"Bonjour"</em> voor je Engels spreekt helpt.<br><br><strong>Betaling:</strong> Kaarten overal geaccepteerd, maar sommige kraampjes in de oude stad liever cash.<br><br><strong>Tijdzone:</strong> CEST — zelfde als Nederland (UTC+2 in april).<br><br><strong>Noodgevallen:</strong> 15 (SAMU medisch), 17 (politie), 18 (brandweer), 112 (EU algemeen).',
+},
+fr:{
+  lens_all:'🔍 Tout',lens_pb:'🏭 PlanBit',lens_er:'⭐ ERPIE',lens_ai:'🤖 IA/Tech',
+  t_ag:'Agenda',t_ppl:'Contacts',t_kb:'Kanban',t_tips:'Conseils',t_nice:'Nice',
+  s_todo:'À faire',s_doing:'En cours',s_done:'Terminé',c_todo:'À Faire',c_doing:'En Cours',c_done:'Terminé',
+  lp_person:'👤 Personne',lp_pre:'📱 Pré-événement',lp_prep:'📱 Préparation',lp_recon:'🔍 Concurrent',
+  btn_s:'▶ Commencer',btn_d:'✓ Terminé',btn_u:'↩ Annuler',btn_met:'☐ Rencontré',btn_met_c:'✓ Rencontré !',
+  done_e:'Les cartes terminées apparaissent ici ✓',
+  wb_pb:'🏭 PlanBit',wb_er:'⭐ ERPIE',wb_ai:'🤖 IA/Tech',
+  pr_hi:'🔴 Priorité absolue',pr_mid:'🔵 Haute valeur',pr_lo:'🟢 À rencontrer',
+  k_partner:'🏭 Partenaire ?',k_sub:'🏭 Sous-traitance',k_lease:'🏭 Flux leasing',k_buyer:'🏭 Canal acheteur',
+  k_todd_s:'ITAD 3.0 · Jour 1',k_kevin_s:'Channel Mastery · Jour 2',k_kim_s:'Directrice BD',k_carmen_s:'Valeur circulaire · Jour 1',k_ant_s:'Channel Mastery · Jour 2',k_mike_s:'IA/ITAD · Jour 2',
+  k_makor_s:'Passer au stand, noter le pitch',k_razor_s:'Voir la démo / tarification',
+  k_mc_t:'Masterclass IA',k_mc_s:'Moteurs de valeur IA · Jour 0',k_li_t:'Pré-connexion LinkedIn',k_li_s:'Todd + Kevin avant le 15 avr',k_demo_t:'Démo ERPIE sur téléphone',k_demo_s:'PriceFinder chargé hors ligne',lt_before:'Avant',
+  c_todd_sess:'ITAD 3.0 : IA, Capital & Carbone',c_todd_quote:'"L\'opportunité de travailler avec davantage de partenaires pour optimiser la gestion de leurs équipements IT de manière durable et rentable est sans limite."',
+  c_kevin_sess:'Channel Mastery : Gagner avec les Marketplaces',c_kevin_quote:"Discussion sur la façon dont les entreprises ITAD utilisent les canaux marketplace — eBay, Back Market — pour faire circuler le matériel reconditionné à grande échelle en Europe.",
+  c_kim_sess:'Femmes Épanouies : Votre Parcours dans la Tech',c_kim_quote:"Panel sur le leadership et les parcours de carrière dans l'ITAD et la tech — Kimberly apporte sa perspective de 15+ ans chez Sims Lifecycle.",
+  c_eric_sess:"ITAD Entreprise à l'Échelle Mondiale : Risque & Revenus",c_eric_quote:"\"L'ITAD entreprise à grande échelle ne concerne plus seulement le traitement des équipements — c'est la gestion des risques, l'optimisation de la valeur et la discipline opérationnelle sur l'ensemble du cycle de vie du projet.\"",
+  c_carmen_sess:'Libérer la Valeur Circulaire dans le Cycle de Vie des Actifs',c_carmen_quote:"Panel sur la stratégie de valeur résiduelle et les modèles commerciaux circulaires — Carmen apporte la perspective BNP Paribas 3 Step IT.",
+  c_ant_sess:'Channel Mastery : Gagner avec les Marketplaces',c_ant_quote:"Antoine couvre l'écosystème vendeurs EU de Back Market — comment les entreprises ITAD et les reconditionneurs utilisent Back Market Pro pour atteindre les consommateurs dans 18 marchés européens.",
+  c_riessen_sess:'Politique Mondiale : DEEE, Batteries & Mandats Circulaires (13h00)',c_riessen_quote:"Riessen représente la perspective de gestion d'actifs de CHG-MERIDIAN — l'un des plus grands acteurs du leasing IT en Europe avec €2,2 Md+ d'originations.",
+  c_mike_sess:'Matériaux Critiques & Intelligence ITAD',c_mike_quote:"Layer IQ applique l'IA aux opérations ITAD. Mike intervient sur la façon dont les données et l'IA transforment l'économie de la tech circulaire.",
+  c_martin_sess:'Channel Mastery : Gagner avec les Marketplaces',c_martin_quote:"Martin couvre la stratégie B2B IT reconditionné d'eBay en Europe — comment la plateforme travaille avec les entreprises ITAD pour créer un marché secondaire plus professionnel.",
+  why_todd_pb:'Ex-VP ITAD Ingram Micro avec un vaste réseau européen. <strong>CXtec traite du matériel data center haute valeur</strong> — potentiellement intéressant comme canal d\'achat pour PlanBit et pour la sous-traitance sur de plus grands appels d\'offres NL.',
+  why_todd_er:'Todd a passé deux décennies à réfléchir à la valorisation ITAD à grande échelle. <strong>Si ERPIE est évoqué, il est l\'un des interlocuteurs les plus intéressants</strong> — en tant qu\'utilisateur potentiel et en tant que personne dont la perspective serait précieuse.',
+  why_kevin_er:'En tant que CSO, il <strong>détermine les partenariats commerciaux chez CXtec</strong>. Si l\'intelligence de prix est pertinente, c\'est la bonne personne pour explorer ça — à son rythme.',
+  why_kim_pb:'SLS Son en Breugel est à 25km de PlanBit Geldermalsen. <strong>Sous-traitance et offres conjointes</strong> pourraient avoir du sens. Kimberly travaille étroitement avec Jelle Slenters (Directeur commercial NL).',
+  why_eric_pb:'SK tes gère 40+ sites — pour les grands clients avec surplus, <strong>ils cherchent souvent des partenaires locaux</strong>. La position NL/Benelux de PlanBit est pertinente.',
+  why_eric_er:'SK tes a développé des systèmes de prix internes. <strong>Intéressant de comprendre comment ils pensent la cohérence des prix sur 40+ sites</strong>.',
+  why_carmen_pb:'3 Step IT gère <strong>2,2M+ appareils pour 4 000+ entreprises</strong> avec des opérations NL. PlanBit pourrait être ce partenaire NL de remarketing.',
+  why_carmen_er:'3 Step IT travaille avec des valeurs résiduelles à grande échelle. <strong>Comprendre comment ils valident actuellement la conformité marché</strong> est un contexte intéressant.',
+  why_ant_pb:'Back Market est la plus grande marketplace reconditionnée d\'Europe. <strong>Stock PlanBit via Back Market Pro</strong> — Antoine saurait si c\'est faisable.',
+  why_riessen_pb:'CHG-MERIDIAN a €2,2 Md+ d\'originations avec <strong>96% de remise à neuf</strong>. Stock fin de bail en NL = potentiellement pertinent pour PlanBit.',
+  why_riessen_er:'L\'activité de CHG-MERIDIAN repose sur la précision des valeurs résiduelles. <strong>Intéressant de comprendre comment ils benchmarkent actuellement</strong>.',
+  why_mike_ai:'Layer IQ développe des outils IA pour l\'ITAD. <strong>Utile de comprendre ce qu\'ils font exactement</strong> — bon contexte pour voir où ERPIE se situe dans le paysage.',
+  why_martin_pb:'<strong>eBay Business est un grand canal B2B</strong> pour l\'IT reconditionné. Martin fait du BD stratégique — conversation intéressante sur ce que ça représente pour une entreprise comme PlanBit.',
+  dn0:'Jour 0',dn1:'Jour 1',dn2:'Jour 2',
+  s_mc:'⚡ Masterclass IA : ITAD Intelligent → Moteurs de Valeur IA',s_ws:'Atelier : ITAD → Org Lifecycle Circulaire Complète',s_kn1:'Keynote Conjointe : Révolution Lifecycle Mondiale 2030',s_3:'🔴 ITAD 3.0 : IA, Capital & Carbone',s_ent:'🔵 ITAD Entreprise à l\'Échelle Mondiale',s_era:'Effacement de Données Nouvelle Génération & Chaîne de Responsabilité',s_hw:'Lifecycle Matériel Entreprise : OEM à Fin de Vie',s_cv:'🔴 Libérer la Valeur Circulaire',s_rt:'🍾 Réception d\'Ouverture sur le Toit',s_rt_sub:'Meilleur moment de networking — arriver tôt !',s_lnv:'Keynote Conjointe : Durabilité Lenovo',s_cm:'🤖 Matériaux Critiques & Intelligence ITAD',s_ch:'🔴 Channel Mastery : Marketplaces dans l\'ITAD Moderne',s_pol:'Politique Mondiale : DEEE, Batteries & Mandats Circulaires',s_pn:'Construire un Réseau de Partenaires International Fiable',s_wm:'🔴 Femmes Épanouies dans la Tech',s_esg:'ITAD + ESG : La Prochaine Opportunité au Milliard',s_on:'🥂 ITAD en Ville — Vieux-Nice',
+  sf_must:'INCONTOURNABLE',sf_net:'NETWORKING',
+  tp0_t:'Trois angles, un seul événement',tp0_b:'Les filtres en haut permettent de voir l\'événement sous trois angles : <strong>PlanBit</strong> (partenariats, sous-traitance, canaux achat/vente), <strong>ERPIE</strong> (où l\'intelligence de prix pourrait être pertinente), <strong>IA/Tech</strong> (ce que fait le marché). Utilisez ce qui vous est utile.',
+  tp1_t:'Réception d\'ouverture (Jour 1, 19h00)',tp1_b:'La réception sur le toit est généralement le moment le plus détendu — les gens sont frais, verre en main, sans agenda. C\'est souvent là que se tiennent les conversations les plus intéressantes.',
+  tp2_t:'Kimberly Labanauskas — Sims NL',tp2_b:'Sims a un site à Son en Breugel, à 25km de Geldermalsen. Kimberly travaille avec <strong>Jelle Slenters</strong>, leur Directeur commercial aux Pays-Bas.',
+  tp3_t:'Après la session ITAD 3.0 (Jour 1, 10h15)',tp3_b:'Si la conversation prend cette direction, <strong>ERPIE s\'y intègrerait naturellement</strong> — c\'est exactement le sujet de la session. Pas besoin de le forcer.',
+  tp4_t:'L\'IA dans l\'ITAD — un sujet vraiment intéressant en ce moment',tp4_b:'<strong>Demander comment les autres abordent la tarification ou la valorisation des actifs</strong> est une bonne amorce de conversation.',
+  tp5_t:'Makor ERP et RazorERP sont tous les deux présents',tp5_b:'Ce sont deux acteurs du logiciel ITAD — ça vaut la peine de passer devant leurs stands pour voir ce qu\'ils montrent.',
+  tp6_t:'Overflow entreprise et sous-traitance',tp6_b:'Les grands acteurs ont régulièrement <strong>des missions en régions où ils ont besoin de partenaires locaux</strong>. NL/Benelux est un bon fit pour PlanBit.',
+  tp7_t:'Retours de crédit-bail comme source de stock',tp7_b:'Carmen Ene et Riessen Hill travaillent avec de grands volumes d\'appareils en fin de bail. <strong>Ces derniers ont souvent besoin d\'un partenaire de remarketing local</strong>.',
+  tp8_t:'Session Channel Mastery (Jour 2, 11h15)',tp8_b:'Kevin Corrigan, Antoine Barbry, Daniel Krüger dans un seul panel. <strong>Pertinent pour les canaux de vente de PlanBit et pour comprendre où l\'intelligence de prix à la ERPIE s\'inscrit.</strong>',
+  nc_weather:'Météo & Transport',nc_weather_b:'Mi-avril à Nice est vraiment agréable — <strong>18–22°C</strong>, surtout ensoleillé. Veste légère le soir. Le centre-ville est très praticable à pied. Tramway ligne 2 le long de la Promenade. Taxis fiables. Aéroport à 7km du centre — environ €25 en taxi.',
+  nc_food:'Cuisine locale à essayer',nc_food_list:'<li><span>Socca</span> — galette de pois chiches, classique de rue niçois</li><li><span>Pan bagnat</span> — la version locale du sandwich salade niçoise</li><li><span>Pissaladière</span> — tarte aux oignons avec anchois & olives</li><li><span>Daube niçoise</span> — bœuf mijoté à la provençale</li><li><span>Vins rosés</span> — la Provence produit la moitié du rosé français</li>',
+  nc_areas:'Quartiers',nc_areas_list:'<li><span>Vieux-Nice</span> — vieille ville, ruelles, restaurants du soir</li><li><span>Promenade des Anglais</span> — 7km de front de mer</li><li><span>Le Port</span> — plus calme, bons restaurants de fruits de mer</li><li><span>Cimiez</span> — musée Matisse, ruines romaines, en hauteur</li>',
+  nc_eve:'Soirée — ITAD en Ville (Jour 2)',nc_eve_b:'La soirée officielle est à <strong>Chez Simon</strong> et <strong>Perlone</strong> dans la vieille ville — deux adresses appréciées, bonne cuisine, ambiance décontractée. La vieille ville se visite mieux à pied ; les rues sont étroites et le GPS se perd.',
+  nc_facts:'Quelques choses sur Nice',nc_facts_b:'Nice n\'est officiellement française que depuis <strong>1860</strong> — elle faisait auparavant partie du Royaume de Sardaigne. Le dialecte local (niçard) est plus proche de l\'italien que du français. La ville possède le deuxième aéroport le plus fréquenté de France après Paris. Et la Promenade des Anglais a littéralement été construite par des touristes anglais au XIXe siècle.',
+  nc_beach:'Plage & plein air',nc_beach_b:'Les plages de Nice sont en <strong>galets, pas en sable</strong> — prenez des chaussures faciles à enlever. L\'eau est claire et déjà à 17–18°C en avril. La Colline du Château offre une vue remarquable sur la baie — ça vaut 45 minutes si vous avez le temps.',
+  nc_practical:'Notes pratiques',nc_practical_b:'<strong>Langue :</strong> Le français est la norme mais l\'anglais fonctionne bien dans les zones touristiques. Un simple <em>« Bonjour »</em> avant de parler anglais aide.<br><br><strong>Paiement :</strong> Cartes acceptées partout, mais certains étals de la vieille ville préfèrent le cash.<br><br><strong>Fuseau horaire :</strong> CEST — même que les Pays-Bas (UTC+2 en avril).<br><br><strong>Urgences :</strong> 15 (SAMU), 17 (police), 18 (pompiers), 112 (EU général).',
+}};
+
+let lang='en',lens='all',kbCol=0;
+
+function toggleTheme(){const h=document.documentElement;h.setAttribute('data-theme',h.getAttribute('data-theme')==='dark'?'light':'dark')}
+
+function setLang(l){
+  lang=l;document.documentElement.setAttribute('lang',l);
+  ['nl','en','fr'].forEach(x=>document.getElementById('fl-'+x).classList.toggle('on',x===l));
+  const t=T[l];
+  document.querySelectorAll('[data-i]').forEach(el=>{const k=el.getAttribute('data-i');if(t[k]!==undefined)el.innerHTML=t[k]});
+  document.querySelectorAll('.kcard').forEach(c=>{const btn=c.querySelector('.mbtn');if(!btn)return;const st=c.dataset.state;btn.innerHTML=st==='done'?t.btn_u:st==='doing'?t.btn_d:t.btn_s});
+  document.querySelectorAll('.abt.done-btn').forEach(b=>{b.textContent=b.classList.contains('chk')?t.btn_met_c:t.btn_met});
+  document.getElementById('l-all').innerHTML=t.lens_all;
+  document.getElementById('l-planbit').innerHTML=t.lens_pb;
+  document.getElementById('l-erpie').innerHTML=t.lens_er;
+  document.getElementById('l-ai').innerHTML=t.lens_ai;
+}
+
+function setLens(l){
+  lens=l;
+  ['all','planbit','erpie','ai'].forEach(x=>{
+    const el=document.getElementById('l-'+x);
+    el.className='lens-pill'+(x===l?' on-'+x:'');
+    if(x==='all'&&l==='all')el.classList.add('on-all');
+  });
+  // apply to all panes via data-lens attribute
+  ['pane-agenda','pane-contacts','pane-tips'].forEach(id=>{
+    document.getElementById(id).dataset.lens=l;
+  });
+  // kanban: apply lens to each column
+  ['col-todo','col-doing','col-done'].forEach(id=>{
+    document.getElementById(id).dataset.lens=l;
+  });
+}
+
+function sw(name){
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tb').forEach(b=>b.classList.remove('on'));
+  document.getElementById('pane-'+name).classList.add('on');
+  document.querySelectorAll('.tb').forEach(b=>{if(b.getAttribute('onclick')&&b.getAttribute('onclick').includes(name))b.classList.add('on')});
+}
+
+/* Kanban horizontal navigation */
+function kbScroll(dir){
+  const track=document.getElementById('kbTrack');
+  const w=track.clientWidth;
+  kbCol=Math.max(0,Math.min(2,kbCol+dir));
+  track.scrollTo({left:kbCol*w,behavior:'smooth'});
+  updateDots();
+}
+function updateDots(){
+  [0,1,2].forEach(i=>document.getElementById('kd-'+i).classList.toggle('on',i===kbCol));
+}
+// update dot on scroll
+document.getElementById('kbTrack').addEventListener('scroll',function(){
+  const w=this.clientWidth;
+  if(w>0){kbCol=Math.round(this.scrollLeft/w);updateDots();}
+});
+
+function mv(id,state){
+  const c=document.getElementById(id);if(!c||c.dataset.state===state)return;
+  c.dataset.state=state;
+  const t=T[lang],col=document.getElementById('col-'+state),btn=c.querySelector('.mbtn'),de=document.getElementById('done-empty');
+  if(state==='done'){c.classList.add('done-c');if(btn){btn.innerHTML=t.btn_u;btn.onclick=()=>mv(id,'todo');}if(de)de.style.display='none';}
+  else if(state==='doing'){c.classList.remove('done-c');if(btn){btn.innerHTML=t.btn_d;btn.onclick=()=>mv(id,'done');}}
+  else{c.classList.remove('done-c');if(btn){btn.innerHTML=t.btn_s;btn.onclick=()=>mv(id,'doing');}}
+  col.appendChild(c);upK();
+}
+function upK(){
+  const td=document.querySelectorAll('#col-todo .kcard').length,dg=document.querySelectorAll('#col-doing .kcard').length,dn=document.querySelectorAll('#col-done .kcard').length,tot=td+dg+dn;
+  document.getElementById('cc-todo').textContent=td;document.getElementById('cc-doing').textContent=dg;document.getElementById('cc-done').textContent=dn;
+  document.getElementById('s-todo').textContent=td;document.getElementById('s-doing').textContent=dg;document.getElementById('s-done').textContent=dn;
+  document.getElementById('b-todo').textContent=td+dg;
+  document.getElementById('prog').style.width=tot>0?Math.round(dn/tot*100)+'%':'0%';
+  const de=document.getElementById('done-empty');if(de)de.style.display=dn===0?'block':'none';
+}
+
+function chkS(el){
+  el.classList.toggle('chk-s');el.querySelector('.sch').textContent=el.classList.contains('chk-s')?'✓':'☐';
+  const tot=document.querySelectorAll('.sitem').length,chk=document.querySelectorAll('.sitem.chk-s').length;
+  document.getElementById('b-ag').textContent=tot-chk;
+}
+
+function cDone(btn){
+  const t=T[lang],row=btn.closest('.crow'),was=btn.classList.contains('chk');
+  if(was){btn.classList.remove('chk');btn.textContent=t.btn_met;row.style.opacity='';}
+  else{btn.classList.add('chk');btn.textContent=t.btn_met_c;row.style.opacity='.45';}
+  const tot=document.querySelectorAll('.crow').length,dn=document.querySelectorAll('.abt.done-btn.chk').length;
+  document.getElementById('b-ppl').textContent=tot-dn;
+}
+
+function whyTab(btn,person,l){
+  const t=T[lang],row=btn.closest('.crow');
+  row.querySelectorAll('.why-tb').forEach(b=>b.className='why-tb');
+  btn.classList.add('on-'+l);
+  const body=document.getElementById('why-'+person),key='why_'+person+'_'+l;
+  if(t[key])body.innerHTML=t[key];
+}
+
+upK();
+</script>
+</body>
+</html>
