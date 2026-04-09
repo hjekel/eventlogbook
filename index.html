@@ -97,6 +97,20 @@ body{font-family:'Instrument Sans',sans-serif;font-size:14px;background:var(--bg
 .help-btn{width:30px;height:30px;border:1px solid var(--bd);border-radius:50%;background:var(--sf2);color:var(--mu);font-family:'Syne',sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:var(--trs)}
 .help-btn:active{transform:scale(.88)}
 
+
+/* ── ERPIE TOOLBAR ── */
+.erpie-bar{display:flex;gap:8px;padding:8px 14px;background:var(--sf);border-bottom:1px solid var(--bd);flex-shrink:0}
+.erpie-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 8px;border-radius:var(--r);border:none;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;cursor:pointer;text-decoration:none;transition:opacity .15s,transform .1s;letter-spacing:-.01em}
+.erpie-btn:active{opacity:.8;transform:scale(.97)}
+.erpie-qq{background:var(--acc);color:#fff}
+.erpie-bf{background:var(--acc-d);color:var(--acc);border:1px solid var(--acc)}
+[data-theme="light"] .erpie-bf{background:#fde4d8;color:#c03a0e;border-color:#e8622a}
+.erpie-btn .eico{font-size:15px}
+.erpie-btn .elbl{line-height:1.2}
+.erpie-btn .esub{font-family:'Instrument Sans',sans-serif;font-size:9px;font-weight:500;opacity:.8;display:block}
+/* version badge */
+.vbadge{font-family:'Instrument Sans',sans-serif;font-size:9px;color:var(--mu);background:var(--sf2);border:1px solid var(--bd);border-radius:8px;padding:2px 6px;flex-shrink:0}
+
 /* ── AGENDA ── */
 .daysec{padding:14px 14px 0}
 .dhrow{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
@@ -296,6 +310,7 @@ body{font-family:'Instrument Sans',sans-serif;font-size:14px;background:var(--bg
     <button class="flag-btn on" id="fl-en" onclick="setLang('en')" title="English">🇬🇧</button>
     <button class="flag-btn" id="fl-fr" onclick="setLang('fr')" title="Français">🇫🇷</button>
   </div>
+  <span class="vbadge">v6</span>
   <button class="help-btn" onclick="showHelp()" title="Help">?</button>
   <button class="thm-btn" onclick="toggleTheme()"><span class="i-moon">🌙</span><span class="i-sun">☀️</span></button>
 </div>
@@ -308,6 +323,16 @@ body{font-family:'Instrument Sans',sans-serif;font-size:14px;background:var(--bg
   <button class="lens-pill"        id="l-ai"      onclick="setLens('ai')"      data-i="lens_ai">🤖 AI/Tech</button>
 </div>
 
+<div class="erpie-bar">
+  <a class="erpie-btn erpie-qq" href="https://quickquote.89.167.28.106.nip.io/" target="_blank">
+    <span class="eico">⚡</span>
+    <span class="elbl">Quick Quote<span class="esub">Single asset price</span></span>
+  </a>
+  <a class="erpie-btn erpie-bf" href="https://bulk.89.167.28.106.nip.io/" target="_blank">
+    <span class="eico">📦</span>
+    <span class="elbl">Bulk PriceFinder<span class="esub">Multiple assets</span></span>
+  </a>
+</div>
 <div class="tabs">
   <button class="tb on" onclick="sw('agenda')">
     <span class="ico">📅</span><span data-i="t_ag">Agenda</span>
@@ -1175,7 +1200,7 @@ function closeWelcome(){
   const m=document.getElementById('welcomeModal');
   m.classList.remove('show');
   setTimeout(()=>m.style.display='none',300);
-  localStorage.setItem('elb_welcomed','1');
+  localStorage.setItem('elb_welcomed_v6','1');
 }
 function showHelp(){
   const m=document.getElementById('helpModal');
@@ -1202,9 +1227,9 @@ rebuildOverview();
 const _upKBase2=upK;
 upK=function(){_upKBase2();rebuildOverview();saveKanban();};
 
-// Show welcome on first visit
-if(!localStorage.getItem('elb_welcomed')){
-  setTimeout(showWelcome, 400);
+// Show welcome on first visit (key: elb_welcomed_v6)
+if(!localStorage.getItem('elb_welcomed_v6')){
+  setTimeout(showWelcome, 500);
 }
 
 </script>
@@ -1278,13 +1303,14 @@ const _origUpK=upK;
   <div class="modal-box">
     <div class="modal-icon">👋</div>
     <div class="modal-title">Welkom, Joep!</div>
-    <div class="modal-sub">Je persoonlijke gids voor ITAD Europe 2026 in Nice.<br>Hier is wat je kunt doen:</div>
+    <div class="modal-sub">Je persoonlijke gids voor ITAD Europe 2026 in Nice · <strong>v6</strong></div>
     <div class="modal-sections">
-      <div class="modal-row"><span class="mico">📅</span><div class="mtxt"><strong>Agenda</strong> — alle sessies per dag. Tik om af te vinken als je ze hebt bijgewoond.</div></div>
-      <div class="modal-row"><span class="mico">🤝</span><div class="mtxt"><strong>People</strong> — je prioritaire contacten met sessie-info en achtergrond.</div></div>
-      <div class="modal-row"><span class="mico">📋</span><div class="mtxt"><strong>Kanban</strong> — je to-do's. Schuif kaarten van To Do → Bezig → Klaar. Wordt opgeslagen.</div></div>
-      <div class="modal-row"><span class="mico">🔍</span><div class="mtxt"><strong>Lens filter</strong> — filter alles op PlanBit, ERPIE of AI/Tech.</div></div>
-      <div class="modal-row"><span class="mico">🌊</span><div class="mtxt"><strong>Nice</strong> — praktische info over de stad.</div></div>
+      <div class="modal-row"><span class="mico">📅</span><div class="mtxt"><strong>Agenda</strong> — alle sessies. Tik om af te vinken.</div></div>
+      <div class="modal-row"><span class="mico">🤝</span><div class="mtxt"><strong>People</strong> — prioritaire contacten met sessie-info en achtergrond per lens.</div></div>
+      <div class="modal-row"><span class="mico">📋</span><div class="mtxt"><strong>Kanban</strong> — to-do's. Van To Do → Bezig → Klaar. <em>Wordt automatisch opgeslagen.</em></div></div>
+      <div class="modal-row"><span class="mico">🔍</span><div class="mtxt"><strong>Lens filter</strong> — filtert alle tabs tegelijk op PlanBit, ERPIE of AI/Tech.</div></div>
+      <div class="modal-row"><span class="mico">⚡</span><div class="mtxt"><strong>ERPIE knoppen</strong> — directe toegang tot Quick Quote en Bulk PriceFinder bovenaan.</div></div>
+      <div class="modal-row"><span class="mico">🌊</span><div class="mtxt"><strong>Nice</strong> — praktische stadsinfo. Tik <strong>?</strong> rechtsboven voor de volledige handleiding.</div></div>
     </div>
     <button class="modal-close" onclick="closeWelcome()">Aan de slag 🚀</button>
   </div>
