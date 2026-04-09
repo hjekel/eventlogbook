@@ -1,11 +1,16 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark" data-lang="en">
+<html lang="en" data-theme="light" data-lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>ITAD Nice '26 · Joep</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icons/icon-32.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="theme-color" content="#e05c25">
+<meta name="apple-mobile-web-app-title" content="EventLogBook">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -19,7 +24,7 @@
   --teal:#2ab5a5;--teal-d:#082820;
   --trs:background .22s,color .22s,border-color .22s;
 }
-[data-theme="dark"]{--bg:#090807;--sf:#121009;--sf2:#1a1814;--sf3:#222018;--bd:#2b2820;--tx:#f0ebe2;--mu:#74706a;--done-bg:#131210;--done-tx:#3e3b37;--sh:rgba(0,0,0,.55)}
+[data-theme="light"]{--bg:#090807;--sf:#121009;--sf2:#1a1814;--sf3:#222018;--bd:#2b2820;--tx:#f0ebe2;--mu:#74706a;--done-bg:#131210;--done-tx:#3e3b37;--sh:rgba(0,0,0,.55)}
 [data-theme="light"]{--bg:#f3f0ea;--sf:#ffffff;--sf2:#ede9e0;--sf3:#e4e0d6;--bd:#cdc8bc;--tx:#18140e;--mu:#847e76;--done-bg:#f8f6f2;--done-tx:#aea89e;--sh:rgba(0,0,0,.08);--acc-d:#fde4d8;--blue-d:#d8ecf8;--grn-d:#d8f0e4;--gold-d:#fdf4d0;--purp-d:#ece8fc;--teal-d:#d4f4f0}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden}
@@ -37,7 +42,7 @@ body{font-family:'Instrument Sans',sans-serif;font-size:14px;background:var(--bg
 .thm-btn{width:32px;height:32px;border:1px solid var(--bd);border-radius:50%;background:var(--sf2);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:var(--trs)}
 .thm-btn:active{transform:scale(.88)}
 [data-theme="light"] .i-moon{display:none}
-[data-theme="dark"]  .i-sun{display:none}
+[data-theme="light"]  .i-sun{display:none}
 
 /* PROGRESS */
 .prog-wrap{height:3px;background:var(--sf3);flex-shrink:0}
@@ -63,6 +68,34 @@ body{font-family:'Instrument Sans',sans-serif;font-size:14px;background:var(--bg
 /* PANES */
 .pane{display:none;flex:1;overflow-y:auto;padding-bottom:calc(16px + var(--safe-b))}
 .pane.on{display:block}
+
+
+/* PWA install banner */
+.pwa-banner{display:none;position:fixed;bottom:calc(20px + var(--safe-b));left:50%;transform:translateX(-50%);background:var(--sf);border:1px solid var(--bd);border-radius:20px;padding:10px 16px;font-size:11px;color:var(--mu);box-shadow:0 4px 20px var(--sh);z-index:200;white-space:nowrap;gap:10px;align-items:center}
+.pwa-banner.show{display:flex}
+.pwa-install-btn{background:var(--acc);color:#fff;border:none;border-radius:12px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Instrument Sans',sans-serif}
+.pwa-close-btn{background:none;border:none;color:var(--mu);font-size:16px;cursor:pointer;padding:0 0 0 4px;line-height:1}
+
+
+/* ── WELCOME POPUP ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:300;display:none;align-items:center;justify-content:center;padding:20px;opacity:0;transition:opacity .3s}
+.modal-overlay.show{opacity:1}
+.modal-box{background:var(--sf);border:1px solid var(--bd);border-radius:20px;padding:28px 24px;max-width:380px;width:100%;box-shadow:0 12px 40px var(--sh);transform:translateY(16px);transition:transform .3s}
+.modal-overlay.show .modal-box{transform:translateY(0)}
+.modal-icon{font-size:36px;text-align:center;margin-bottom:12px}
+.modal-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--tx);text-align:center;margin-bottom:6px}
+.modal-sub{font-size:12.5px;color:var(--mu);text-align:center;line-height:1.6;margin-bottom:20px}
+.modal-sections{display:flex;flex-direction:column;gap:8px;margin-bottom:22px}
+.modal-row{display:flex;align-items:flex-start;gap:10px;padding:9px 12px;background:var(--sf2);border-radius:var(--rs)}
+.modal-row .mico{font-size:17px;flex-shrink:0;padding-top:1px}
+.modal-row .mtxt{font-size:12px;color:var(--mu);line-height:1.5}
+.modal-row .mtxt strong{color:var(--tx);font-weight:600}
+.modal-close{width:100%;padding:13px;border:none;border-radius:var(--r);background:var(--acc);color:#fff;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:opacity .15s}
+.modal-close:active{opacity:.8}
+.modal-close.secondary{background:var(--sf2);color:var(--mu);margin-top:8px}
+/* ── HELP BUTTON ── */
+.help-btn{width:30px;height:30px;border:1px solid var(--bd);border-radius:50%;background:var(--sf2);color:var(--mu);font-family:'Syne',sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:var(--trs)}
+.help-btn:active{transform:scale(.88)}
 
 /* ── AGENDA ── */
 .daysec{padding:14px 14px 0}
@@ -140,6 +173,33 @@ body{font-family:'Instrument Sans',sans-serif;font-size:14px;background:var(--bg
 .abt.done-btn{background:var(--grn-d);color:var(--grn);border-color:transparent}
 .abt.done-btn.chk{background:var(--grn);color:#fff}
 .abt:active{opacity:.7;transform:scale(.97)}
+
+
+/* ── KANBAN OVERVIEW (3-col at-a-glance) ── */
+.kb-overview{display:flex;gap:0;border-bottom:1px solid var(--bd);background:var(--sf);flex-shrink:0;position:sticky;top:0;z-index:10}
+.kbo-col{flex:1;padding:8px 8px 10px;cursor:pointer;border-right:1px solid var(--bd);transition:background .15s}
+.kbo-col:last-child{border-right:none}
+.kbo-col:active{background:var(--sf2)}
+.kbo-col.focused{background:var(--sf2)}
+.kbo-todo .kbo-header{border-bottom:2px solid var(--acc)}
+.kbo-doing .kbo-header{border-bottom:2px solid var(--blue)}
+.kbo-done .kbo-header{border-bottom:2px solid var(--grn)}
+.kbo-header{display:flex;align-items:center;justify-content:space-between;padding-bottom:5px;margin-bottom:6px}
+.kbo-label{font-family:'Syne',sans-serif;font-size:9.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--mu)}
+.kbo-todo .kbo-label{color:var(--acc)}.kbo-doing .kbo-label{color:var(--blue)}.kbo-done .kbo-label{color:var(--grn)}
+.kbo-count{font-family:'Syne',sans-serif;font-size:13px;font-weight:800;line-height:1}
+.kbo-todo .kbo-count{color:var(--acc)}.kbo-doing .kbo-count{color:var(--blue)}.kbo-done .kbo-count{color:var(--grn)}
+.kbo-chips{display:flex;flex-direction:column;gap:3px;min-height:18px}
+.kbo-chip{font-size:9.5px;font-weight:600;color:var(--tx);background:var(--sf3);border-radius:4px;padding:3px 5px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-left:2px solid transparent;transition:var(--trs)}
+.kbo-chip.lp{border-left-color:var(--blue)}
+.kbo-chip.le{border-left-color:var(--acc)}
+.kbo-chip.la{border-left-color:var(--purp)}
+.kbo-chip.lb{border-left-color:var(--teal)}
+.kbo-chip.done-chip{color:var(--done-tx);text-decoration:line-through;background:var(--done-bg)}
+/* focus wrap */
+.kb-focus-wrap{flex:1;overflow-y:auto;padding-bottom:calc(16px + var(--safe-b))}
+#pane-kanban{display:none;flex-direction:column;overflow:hidden}
+#pane-kanban.on{display:flex}
 
 /* ── KANBAN — horizontal scroll, cards in single column per state ── */
 .kb-stats{display:flex;background:var(--sf2);border:1px solid var(--bd);border-radius:var(--r);margin:12px 14px 0;overflow:hidden;transition:var(--trs)}
@@ -236,6 +296,7 @@ body{font-family:'Instrument Sans',sans-serif;font-size:14px;background:var(--bg
     <button class="flag-btn on" id="fl-en" onclick="setLang('en')" title="English">🇬🇧</button>
     <button class="flag-btn" id="fl-fr" onclick="setLang('fr')" title="Français">🇫🇷</button>
   </div>
+  <button class="help-btn" onclick="showHelp()" title="Help">?</button>
   <button class="thm-btn" onclick="toggleTheme()"><span class="i-moon">🌙</span><span class="i-sun">☀️</span></button>
 </div>
 <div class="prog-wrap"><div class="prog-bar" id="prog" style="width:0%"></div></div>
@@ -613,7 +674,25 @@ body{font-family:'Instrument Sans',sans-serif;font-size:14px;background:var(--bg
 
 <!-- ══════ PANE 3: KANBAN ══════ -->
 <div class="pane" id="pane-kanban">
-  <div class="kb-stats">
+  <!-- OVERVIEW BAR -->
+  <div class="kb-overview" id="kbOverview">
+    <div class="kbo-col kbo-todo" onclick="kbFocus('todo')">
+      <div class="kbo-header"><span class="kbo-label" data-i="c_todo">To Do</span><span class="kbo-count" id="kbo-count-todo">8</span></div>
+      <div class="kbo-chips" id="kbo-chips-todo"></div>
+    </div>
+    <div class="kbo-col kbo-doing" onclick="kbFocus('doing')">
+      <div class="kbo-header"><span class="kbo-label" data-i="c_doing">In Progress</span><span class="kbo-count" id="kbo-count-doing">3</span></div>
+      <div class="kbo-chips" id="kbo-chips-doing"></div>
+    </div>
+    <div class="kbo-col kbo-done" onclick="kbFocus('done')">
+      <div class="kbo-header"><span class="kbo-label" data-i="c_done">Done</span><span class="kbo-count" id="kbo-count-done">0</span></div>
+      <div class="kbo-chips" id="kbo-chips-done"></div>
+    </div>
+  </div>
+
+  <!-- FOCUSED COLUMN (full cards) -->
+  <div class="kb-focus-wrap">
+    <div class="kb-stats">
     <div class="kb-st"><div class="kb-sn" style="color:var(--acc)" id="s-todo">8</div><div class="kb-sl" data-i="s_todo">To Do</div></div>
     <div class="kb-st"><div class="kb-sn" style="color:var(--blue)" id="s-doing">3</div><div class="kb-sl" data-i="s_doing">In Progress</div></div>
     <div class="kb-st"><div class="kb-sn" style="color:var(--grn)" id="s-done">0</div><div class="kb-sl" data-i="s_done">Done</div></div>
@@ -652,8 +731,9 @@ body{font-family:'Instrument Sans',sans-serif;font-size:14px;background:var(--bg
       <div class="kb-ch done"><span class="kb-cl" data-i="c_done">Done</span><span class="kb-cn" id="cc-done">0</span></div>
       <div id="done-empty" style="text-align:center;padding:22px 10px;color:var(--mu);font-size:11px;" data-i="done_e">Completed cards appear here ✓</div>
     </div>
-  </div>
-</div>
+  </div><!-- /kb-track -->
+  </div><!-- /kb-focus-wrap -->
+</div><!-- /pane-kanban -->
 
 <!-- ══════ PANE 4: TIPS ══════ -->
 <div class="pane" id="pane-tips">
@@ -1014,7 +1094,219 @@ function whyTab(btn,person,l){
   if(t[key])body.innerHTML=t[key];
 }
 
+
+/* ── KANBAN PERSISTENCE ── */
+const KB_KEY = 'elb_kanban_v1';
+const SESS_KEY = 'elb_sessions_v1';
+const MET_KEY = 'elb_met_v1';
+
+function saveKanban(){
+  const state={};
+  document.querySelectorAll('.kcard').forEach(c=>{state[c.id]=c.dataset.state;});
+  localStorage.setItem(KB_KEY,JSON.stringify(state));
+}
+
+function loadKanban(){
+  try{
+    const saved=JSON.parse(localStorage.getItem(KB_KEY)||'{}');
+    Object.entries(saved).forEach(([id,state])=>{
+      const card=document.getElementById(id);
+      if(card && card.dataset.state !== state){
+        // silently move without triggering full mv() to avoid loops
+        card.dataset.state=state;
+        const col=document.getElementById('col-'+state);
+        if(col) col.appendChild(card);
+        if(state==='done'){
+          card.classList.add('done-c');
+          const btn=card.querySelector('.mbtn');
+          if(btn){btn.innerHTML=T[lang].btn_u;btn.onclick=()=>mv(id,'todo');}
+        } else if(state==='doing'){
+          card.classList.remove('done-c');
+          const btn=card.querySelector('.mbtn');
+          if(btn){btn.innerHTML=T[lang].btn_d;btn.onclick=()=>mv(id,'done');}
+        } else {
+          card.classList.remove('done-c');
+          const btn=card.querySelector('.mbtn');
+          if(btn){btn.innerHTML=T[lang].btn_s;btn.onclick=()=>mv(id,'doing');}
+        }
+      }
+    });
+    // hide done-empty if needed
+    const dn=document.querySelectorAll('#col-done .kcard').length;
+    const de=document.getElementById('done-empty');
+    if(de) de.style.display=dn===0?'block':'none';
+  } catch(e){}
+}
+
+function saveSessions(){
+  const state=[];
+  document.querySelectorAll('.sitem.chk-s').forEach(s=>state.push(s.dataset.sid||''));
+  localStorage.setItem(SESS_KEY,JSON.stringify(state));
+}
+
+function saveMet(){
+  const state=[];
+  document.querySelectorAll('.abt.done-btn.chk').forEach((b,i)=>{
+    const row=b.closest('.crow');
+    if(row) state.push(row.dataset.mid||'');
+  });
+  localStorage.setItem(MET_KEY,JSON.stringify(state));
+}
+
+/* patch mv to save after move */
+const _mvBase=mv;
+mv=function(id,state){_mvBase(id,state);saveKanban();};
+
+/* patch chkS to save */
+const _chkSBase=chkS;
+chkS=function(el){_chkSBase(el);saveSessions();};
+
+/* patch cDone to save */
+const _cDoneBase=cDone;
+cDone=function(btn){_cDoneBase(btn);saveMet();};
+
+/* ── WELCOME & HELP MODALS ── */
+function showWelcome(){
+  const m=document.getElementById('welcomeModal');
+  m.style.display='flex';
+  requestAnimationFrame(()=>m.classList.add('show'));
+}
+function closeWelcome(){
+  const m=document.getElementById('welcomeModal');
+  m.classList.remove('show');
+  setTimeout(()=>m.style.display='none',300);
+  localStorage.setItem('elb_welcomed','1');
+}
+function showHelp(){
+  const m=document.getElementById('helpModal');
+  m.style.display='flex';
+  requestAnimationFrame(()=>m.classList.add('show'));
+}
+function closeHelp(){
+  const m=document.getElementById('helpModal');
+  m.classList.remove('show');
+  setTimeout(()=>m.style.display='none',300);
+}
+// close on backdrop click
+document.getElementById('welcomeModal').addEventListener('click',function(e){
+  if(e.target===this) closeWelcome();
+});
+document.getElementById('helpModal').addEventListener('click',function(e){
+  if(e.target===this) closeHelp();
+});
+
+/* ── INIT ── */
+loadKanban();
 upK();
+rebuildOverview();
+const _upKBase2=upK;
+upK=function(){_upKBase2();rebuildOverview();saveKanban();};
+
+// Show welcome on first visit
+if(!localStorage.getItem('elb_welcomed')){
+  setTimeout(showWelcome, 400);
+}
+
 </script>
+
+<div class="pwa-banner" id="pwaBanner">
+  <span>📲 Add EventLogBook to home screen</span>
+  <button class="pwa-install-btn" id="pwaInstallBtn">Install</button>
+  <button class="pwa-close-btn" onclick="document.getElementById('pwaBanner').classList.remove('show')">×</button>
+</div>
+
+<script>
+
+/* ── PWA SERVICE WORKER ── */
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+}
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();deferredPrompt=e;
+  setTimeout(()=>document.getElementById('pwaBanner').classList.add('show'),3000);
+});
+document.getElementById('pwaInstallBtn').addEventListener('click',()=>{
+  if(deferredPrompt){deferredPrompt.prompt();deferredPrompt.then(()=>{deferredPrompt=null;document.getElementById('pwaBanner').classList.remove('show');});}
+});
+
+/* ── KANBAN OVERVIEW CHIPS ── */
+function rebuildOverview(){
+  const cols=['todo','doing','done'];
+  cols.forEach(state=>{
+    const chips=document.getElementById('kbo-chips-'+state);
+    const count=document.getElementById('kbo-count-'+state);
+    const cards=document.querySelectorAll('#col-'+state+' .kcard');
+    chips.innerHTML='';
+    count.textContent=cards.length;
+    cards.forEach(card=>{
+      const name=card.querySelector('.kct')?.textContent||'';
+      const chip=document.createElement('div');
+      chip.className='kbo-chip';
+      // lens colour
+      if(card.classList.contains('lens-both'))chip.classList.add('lb');
+      else if(card.classList.contains('lens-planbit'))chip.classList.add('lp');
+      else if(card.classList.contains('lens-erpie'))chip.classList.add('le');
+      else if(card.classList.contains('lens-ai'))chip.classList.add('la');
+      if(card.classList.contains('done-c'))chip.classList.add('done-chip');
+      chip.textContent=name;
+      chips.appendChild(chip);
+    });
+  });
+  // highlight focused col
+  document.querySelectorAll('.kbo-col').forEach(c=>c.classList.remove('focused'));
+  document.querySelector('.kbo-col.kbo-'+(['todo','doing','done'][kbCol]||'todo'))?.classList.add('focused');
+}
+
+function kbFocus(state){
+  const idx={'todo':0,'doing':1,'done':2}[state]||0;
+  kbCol=idx;
+  const track=document.getElementById('kbTrack');
+  track.scrollTo({left:idx*track.clientWidth,behavior:'smooth'});
+  updateDots();
+  rebuildOverview();
+}
+
+/* patch mv and upK to also rebuild overview */
+const _origUpK=upK;
+// override upK inline after definition — wrap it
+
+</script>
+
+<!-- WELCOME MODAL -->
+<div class="modal-overlay" id="welcomeModal">
+  <div class="modal-box">
+    <div class="modal-icon">👋</div>
+    <div class="modal-title">Welkom, Joep!</div>
+    <div class="modal-sub">Je persoonlijke gids voor ITAD Europe 2026 in Nice.<br>Hier is wat je kunt doen:</div>
+    <div class="modal-sections">
+      <div class="modal-row"><span class="mico">📅</span><div class="mtxt"><strong>Agenda</strong> — alle sessies per dag. Tik om af te vinken als je ze hebt bijgewoond.</div></div>
+      <div class="modal-row"><span class="mico">🤝</span><div class="mtxt"><strong>People</strong> — je prioritaire contacten met sessie-info en achtergrond.</div></div>
+      <div class="modal-row"><span class="mico">📋</span><div class="mtxt"><strong>Kanban</strong> — je to-do's. Schuif kaarten van To Do → Bezig → Klaar. Wordt opgeslagen.</div></div>
+      <div class="modal-row"><span class="mico">🔍</span><div class="mtxt"><strong>Lens filter</strong> — filter alles op PlanBit, ERPIE of AI/Tech.</div></div>
+      <div class="modal-row"><span class="mico">🌊</span><div class="mtxt"><strong>Nice</strong> — praktische info over de stad.</div></div>
+    </div>
+    <button class="modal-close" onclick="closeWelcome()">Aan de slag 🚀</button>
+  </div>
+</div>
+
+<!-- HELP MODAL -->
+<div class="modal-overlay" id="helpModal">
+  <div class="modal-box">
+    <div class="modal-icon">📖</div>
+    <div class="modal-title">How to use</div>
+    <div class="modal-sub">EventLogBook — ITAD Nice '26</div>
+    <div class="modal-sections">
+      <div class="modal-row"><span class="mico">📅</span><div class="mtxt"><strong>Agenda</strong> — tap a session to mark it done (strikethrough). Tap again to undo.</div></div>
+      <div class="modal-row"><span class="mico">🤝</span><div class="mtxt"><strong>People</strong> — tap PlanBit / ERPIE tabs to see why each person is relevant. Mark as Met ✓.</div></div>
+      <div class="modal-row"><span class="mico">📋</span><div class="mtxt"><strong>Kanban</strong> — overview bar shows all columns at once. ▶ Start moves a card to In Progress. ✓ Done completes it. <em>Your progress is saved automatically.</em></div></div>
+      <div class="modal-row"><span class="mico">🔍</span><div class="mtxt"><strong>Lens filter</strong> — PlanBit / ERPIE / AI/Tech filters all tabs simultaneously.</div></div>
+      <div class="modal-row"><span class="mico">🌙</span><div class="mtxt"><strong>Theme</strong> — tap the circle button (☀️/🌙) to switch light/dark mode.</div></div>
+      <div class="modal-row"><span class="mico">🌐</span><div class="mtxt"><strong>Language</strong> — tap 🇳🇱 🇬🇧 🇫🇷 to switch language at any time.</div></div>
+    </div>
+    <button class="modal-close" onclick="closeHelp()">Got it</button>
+  </div>
+</div>
+
 </body>
 </html>
